@@ -1,230 +1,361 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>HGC Informativo</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet" />
   <style>
+    /* ===== THEME TOKENS ===== */
     :root {
-      --blue-light: #4da6ff;
-      --blue-dark: #0059b3;
-      --bg-light: #f5f9ff;
-      --bg-dark: #0d1117;
+      --blue-50: #e9f4ff;   /* very light for light mode */
+      --blue-100: #d6ecff;
+      --blue-300: #7bb8ff;
+      --blue-500: #2f80ff;
+      --blue-700: #0e4fb3;
+      --blue-900: #0a2c66;  /* deeper for dark mode */
+
+      --bg-light: #ffffff;
       --text-light: #0d1117;
-      --text-dark: #e6f0ff;
+
+      --bg-dark: #0b1020;
+      --text-dark: #eaf2ff;
+
+      --radius-xl: 22px;
     }
 
     [data-theme="light"] {
-      --bg-color: var(--bg-light);
-      --text-color: var(--text-light);
-      --accent: var(--blue-light);
+      --bg: var(--bg-light);
+      --text: var(--text-light);
+      --card: #ffffff;
+      --muted: #3a4a66;
+      --accent: var(--blue-500);
+      --accent-weak: var(--blue-100);
+      --header-grad: linear-gradient(90deg, var(--blue-300), transparent);
     }
 
     [data-theme="dark"] {
-      --bg-color: var(--bg-dark);
-      --text-color: var(--text-dark);
-      --accent: var(--blue-dark);
+      --bg: var(--bg-dark);
+      --text: var(--text-dark);
+      --card: rgba(255, 255, 255, 0.04);
+      --muted: #b6c5e3;
+      --accent: var(--blue-700);
+      --accent-weak: rgba(47, 128, 255, 0.18);
+      --header-grad: linear-gradient(90deg, var(--blue-900), transparent);
     }
 
+    /* ===== RESET ===== */
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
     body {
       margin: 0;
-      font-family: 'Roboto', sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      transition: background 0.3s, color 0.3s;
+      font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      transition: background .35s ease, color .35s ease;
     }
 
+    /* ===== HEADER ===== */
     header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 2rem;
-      background: linear-gradient(90deg, var(--accent), transparent);
-      font-family: 'Orbitron', sans-serif;
+      position: sticky; top: 0; z-index: 50;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: .85rem 1rem;
+      backdrop-filter: blur(10px);
+      background: color-mix(in oklab, var(--bg) 85%, transparent);
+      border-bottom: 1px solid color-mix(in oklab, var(--accent) 25%, transparent);
     }
-
-    nav button {
+    .brand { display: flex; gap: .6rem; align-items: baseline; }
+    .brand h1 {
+      margin: 0;
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(1.1rem, 2.6vw, 1.6rem);
+      letter-spacing: .5px;
+      background: linear-gradient(180deg, var(--accent), color-mix(in oklab, var(--accent) 55%, var(--text)));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    nav { display: flex; gap: .4rem; flex-wrap: wrap; }
+    .btn { cursor: pointer; border: none; border-radius: 14px; padding: .6rem .9rem; font-weight: 700; }
+    .btn-tab {
+      background: var(--accent-weak);
+      color: var(--text);
+      border: 1px solid color-mix(in oklab, var(--accent) 25%, transparent);
+      transition: transform .15s ease, background .25s ease, box-shadow .25s ease;
+      box-shadow: 0 6px 18px -10px color-mix(in oklab, var(--accent) 65%, transparent);
+    }
+    .btn-tab.active, .btn-tab:hover {
       background: var(--accent);
-      border: none;
       color: white;
-      padding: 0.5rem 1rem;
-      margin: 0 0.3rem;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: transform 0.2s;
-      font-weight: bold;
+      transform: translateY(-1px);
+      box-shadow: 0 10px 26px -14px color-mix(in oklab, var(--accent) 85%, black);
     }
+    .cluster { display: flex; gap: .4rem; align-items: center; }
 
-    nav button:hover {
-      transform: scale(1.05);
-    }
+    .btn-plain { background: transparent; border: 1px solid color-mix(in oklab, var(--accent) 35%, transparent); color: var(--text); }
+    .btn-plain:hover { background: color-mix(in oklab, var(--accent) 18%, transparent); }
 
-    .lang-switch button {
-      font-size: 1.2rem;
-      background: none;
-      border: none;
-      cursor: pointer;
-      margin-left: 0.5rem;
-    }
+    .lang-switch button { font-size: 1.15rem; padding: .45rem .6rem; border-radius: 12px; }
 
-    .section {
-      display: none;
-      padding: 2rem;
-      animation: fadeIn 0.6s ease-in-out;
-    }
+    /* ===== LAYOUT ===== */
+    main { padding: 1.2rem; }
+    .wrap { max-width: 1100px; margin: 0 auto; }
 
-    .active {
-      display: block;
-    }
-
+    /* ===== CARDS (3D BUBBLES) ===== */
     .card {
-      background: rgba(255, 255, 255, 0.05);
-      padding: 1.5rem;
-      border-radius: 20px;
-      margin: 1rem auto;
-      max-width: 1000px;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-      border: 1px solid var(--accent);
-      backdrop-filter: blur(6px);
+      position: relative;
+      background: var(--card);
+      border: 1px solid color-mix(in oklab, var(--accent) 25%, transparent);
+      border-radius: var(--radius-xl);
+      padding: clamp(1rem, 2.5vw, 1.6rem);
+      margin: 14px auto;
+      box-shadow: 0 12px 40px -20px color-mix(in oklab, var(--accent) 80%, black),
+                  inset 0 1px 0 rgba(255,255,255,0.05);
+      backdrop-filter: blur(8px);
+      transform: translateZ(0); /* enables GPU */
+    }
+    .card::after { /* subtle blue glow */
+      content: ""; position: absolute; inset: -1px; border-radius: inherit;
+      pointer-events: none;
+      background: linear-gradient(135deg, transparent 60%, color-mix(in oklab, var(--accent) 22%, transparent));
+      mask: radial-gradient(120% 120% at 100% 0%, black 30%, transparent 60%);
     }
 
-    .card p {
-      text-align: justify;
-      line-height: 1.8;
-      margin-bottom: 1rem;
+    h2, h3 { font-family: 'Orbitron', sans-serif; letter-spacing: .3px; margin-top: 0; color: var(--accent); }
+
+    .lead { font-weight: 600; }
+
+    /* Readability for long text */
+    .prose { line-height: 1.75; text-align: justify; }
+    .prose p { margin: .6rem 0 1rem; }
+
+    /* ===== SECTIONS & TRANSITIONS ===== */
+    .section { display: none; opacity: 0; transform: translateY(10px); transition: opacity .35s ease, transform .35s ease; }
+    .section.active { display: block; opacity: 1; transform: translateY(0); }
+
+    /* ===== FOOTER ===== */
+    footer { margin: 20px 0 40px; text-align: center; color: var(--muted); }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 720px) {
+      header { gap: .6rem; }
+      nav { flex: 1; justify-content: center; }
+      .brand h1 { font-size: 1.1rem; }
+      .card { padding: 1rem; }
     }
 
-    h2 {
-      font-family: 'Orbitron', sans-serif;
-      color: var(--accent);
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    footer {
-      text-align: center;
-      padding: 1.5rem;
-      background: linear-gradient(90deg, transparent, var(--accent));
-    }
+    /* ===== LANGUAGE VISIBILITY ===== */
+    [data-lang="es"] .lang-en { display: none; }
+    [data-lang="en"] .lang-es { display: none; }
   </style>
 </head>
-<body data-theme="dark" data-lang="es">
+<body data-theme="light">
   <header>
-    <h1>HGC Informativo</h1>
-    <div style="display:flex; align-items:center;">
-      <nav>
-        <button onclick="showSection('home')">Home</button>
-        <button onclick="showSection('informativo')">Informativo</button>
-        <button onclick="showSection('politicas')">Políticas</button>
-      </nav>
+    <div class="brand">
+      <h1>HGC Informativo</h1>
+    </div>
+    <nav>
+      <button class="btn btn-tab active" data-tab="home">Home</button>
+      <button class="btn btn-tab" data-tab="informativo">Informativo</button>
+      <button class="btn btn-tab" data-tab="politicas">Políticas</button>
+    </nav>
+    <div class="cluster">
       <div class="lang-switch">
-        <button onclick="setLang('es')">🇪🇸</button>
-        <button onclick="setLang('en')">🇺🇸</button>
+        <button class="btn btn-plain" id="btn-es" aria-label="Cambiar a español">🇪🇸</button>
+        <button class="btn btn-plain" id="btn-en" aria-label="Switch to English">🇺🇸</button>
       </div>
-      <button onclick="toggleTheme()" style="margin-left:1rem;">🌙</button>
+      <button id="themeBtn" class="btn btn-plain" aria-label="Cambiar tema">🌙</button>
     </div>
   </header>
 
   <main>
-    <section id="home" class="section active">
-      <div class="card">
-        <h2 data-es="Bienvenido" data-en="Welcome">Bienvenido</h2>
-        <p data-es="Explora nuestras secciones: Home, Informativo y Políticas. Tema blanco y azul con animaciones suaves, diseño responsive y modo claro/oscuro con azules adaptados." 
-           data-en="Explore our sections: Home, Informative and Policies. White and blue theme with smooth animations, responsive design and light/dark mode with adapted blues.">
-           Explora nuestras secciones: Home, Informativo y Políticas. Tema blanco y azul con animaciones suaves, diseño responsive y modo claro/oscuro con azules adaptados.
-        </p>
-      </div>
-      <div class="card">
-        <h2 data-es="Atajos" data-en="Shortcuts">Atajos</h2>
-        <p data-es="Consejo: toca en Informativo para ver la descripción de HGC exactamente como nos la diste, y en Políticas para ver todas las políticas y avisos legales sin modificar." 
-           data-en="Tip: Tap on Informative to see the exact HGC description as you gave it to us, and on Policies to see all policies and legal notices without modification.">
-           Consejo: toca en Informativo para ver la descripción de HGC exactamente como nos la diste, y en Políticas para ver todas las políticas y avisos legales sin modificar.
-        </p>
-      </div>
-    </section>
+    <div class="wrap">
 
-    <section id="informativo" class="section">
-      <div class="card">
-        <h2>📌 Página Informativa – HGC</h2>
-        <p>
-Página Informativa – HGC ¿Quiénes Somos? HGC es una oficina de servicios administrativos que trabaja con transparencia, responsabilidad y apego a la ley. No somos abogados ni brindamos asesoría legal, pero apoyamos a nuestros clientes en la gestión documental y en trámites administrativos de manera clara y segura.
-        </p>
-        <p>
-Aviso Legal: “I AM NOT AN ATTORNEY LICENSED TO PRACTICE LAW. I MAY NOT GIVE LEGAL ADVICE OR ACCEPT FEES FOR LEGAL ADVICE. I AM NOT ACCREDITED TO REPRESENT YOU IN IMMIGRATION MATTERS.”
-        </p>
-        <p>
-Nuestras Políticas Comunicación: Todos los clientes deben mantener comunicación activa vía correo electrónico durante los procesos en curso. 
-Entrega de Documentos: Los documentos físicos se envían únicamente mediante mensajería certificada (UPS o equivalente). El cliente cubre los gastos de envío y manejo. La oficina no es responsable de retrasos ocasionados por terceros (servicios postales o de mensajería).
-        </p>
-        <p>
-Custodia de Documentos: No retenemos documentos migratorios ni personales una vez entregados. El cliente puede solicitar copia de lo entregado en cualquier momento. 
-Trato al Cliente: Atendemos a todos con respeto, dignidad y sin discriminación.
-        </p>
-        <p>
-Honorarios: Los servicios se cobran conforme a la ley del Estado de Florida y se emite comprobante por cada gestión.
-Seguridad y Confidencialidad: La información se maneja con total reserva y la oficina cuenta con medidas de seguridad.
-        </p>
-        <p>
-🛡️ Protección Legal: HGC se ampara en: Florida Statutes Chapter 117 – Notaries Public, Florida Statutes § 836.05 – Extortion/Threats, Florida Statutes § 784.048 – Stalking/Harassment, First Amendment & Due Process – U.S. Constitution. 
-👉 Esto significa que cualquier amenaza, difamación o intento de intimidación podrá ser usado como evidencia legal.
-        </p>
-        <p>
-🤝 Nuestro Compromiso: Brindar un servicio responsable y transparente. Manejar su información con absoluta confidencialidad. Responder siempre en tiempo y forma, conforme a la ley. Garantizar un ambiente de respeto y profesionalismo.
-        </p>
-      </div>
-    </section>
+      <!-- ===== HOME ===== -->
+      <section id="home" class="section active">
+        <div class="card">
+          <h2 class="lang-es">Bienvenido</h2>
+          <h2 class="lang-en">Welcome</h2>
+          <div class="prose">
+            <p class="lang-es lead">Explora nuestras secciones: Home, Informativo y Políticas. Tema blanco y azul con animaciones suaves, diseño responsive y modo claro/oscuro con azules adaptados.</p>
+            <p class="lang-en lead">Explore our sections: Home, Informative and Policies. White and blue theme with smooth animations, responsive design and light/dark mode with adapted blues.</p>
+          </div>
+        </div>
+        <div class="card">
+          <h3 class="lang-es">Atajos</h3>
+          <h3 class="lang-en">Shortcuts</h3>
+          <div class="prose">
+            <p class="lang-es">Consejo: toca en Informativo para ver la descripción de HGC exactamente como nos la diste, y en Políticas para ver todas las políticas y avisos legales sin modificar.</p>
+            <p class="lang-en">Tip: Tap on Informative to see the exact HGC description as you gave it to us, and on Policies to see all policies and legal notices without modification.</p>
+          </div>
+        </div>
+      </section>
 
-    <section id="politicas" class="section">
-      <div class="card">
-        <h2>📌 Políticas de Oficina – HGC</h2>
-        <p>
-📌 Importante: I AM NOT AN ATTORNEY LICENSED TO PRACTICE LAW. I MAY NOT GIVE LEGAL ADVICE OR ACCEPT FEES FOR LEGAL ADVICE. I AM NOT ACCREDITED TO REPRESENT YOU IN IMMIGRATION MATTERS.
-        </p>
-        <p>
-📌 Protección Legal: Esta oficina está protegida bajo las siguientes leyes: Florida Statutes Chapter 117 – Notaries Public, Florida Statutes § 836.05 – Extortion/Threats, Florida Statutes § 784.048 – Stalking/Harassment, First Amendment & Due Process – U.S. Constitution. 
-Cualquier amenaza escrita, correo electrónico o mensaje podrá ser retenido y usado como evidencia legal.
-        </p>
-        <p>
-📌 Política de Documentos: Todos los documentos recibidos se entregarán únicamente a su dueño legítimo. Esta oficina no retiene documentos migratorios ni personales una vez notificados al cliente. El cliente puede solicitar copia de los documentos entregados en cualquier momento.
-        </p>
-        <p>
-📌 Honorarios: Los servicios notariales se cobran conforme a la ley del Estado de Florida. (Tarifa disponible bajo solicitud).
-        </p>
-        <p>
-📌 Compromiso de Igualdad: Esta oficina no discrimina por raza, color, religión, sexo, origen nacional, edad, discapacidad o estatus migratorio.
-        </p>
-        <p>
-📌 Seguridad: Esta oficina cuenta con videovigilancia para la protección de clientes y personal.
-        </p>
-      </div>
-    </section>
+      <!-- ===== INFORMATIVO (OFICINA / POLÍTICAS DE OFICINA – HGC) ===== -->
+      <section id="informativo" class="section">
+        <div class="card">
+          <h2 class="lang-es">📌 Políticas de Oficina – HGC</h2>
+          <h2 class="lang-en">📌 Office Policies – HGC</h2>
+          <div class="prose">
+            <!-- Español -->
+            <div class="lang-es">
+              <p><strong>1. Transparencia y Legalidad</strong><br>
+              - HGC actúa siempre en conformidad con las leyes del Estado de Florida, incluyendo el Capítulo 117 de los Estatutos de Florida – Notaries Public. - No se brinda asesoría legal ni representación en inmigración, según lo establecido por la ley. - Todos los servicios se realizan de manera transparente, con registros escritos y recibos claros de los procesos efectuados.</p>
+
+              <p><strong>2. Entrega y Custodia de Documentos</strong><br>
+              - Todos los documentos recibidos se entregarán únicamente a su legítimo propietario. - La oficina no retiene documentos de inmigración ni personales una vez que han sido procesados. - A solicitud, los clientes pueden recibir copias de los documentos entregados para sus registros. - Puede mantenerse un expediente de control administrativo solo para fines administrativos y no constituye retención indebida.</p>
+
+              <p><strong>3. Comunicación con el Cliente</strong><br>
+              - Todos los clientes deben mantener comunicación activa vía correo electrónico durante los procesos en curso. - Los documentos físicos solo se enviarán mediante servicios de mensajería certificados (UPS o equivalente). - El cliente es responsable de cubrir los costos de envío y manejo. - La oficina no es responsable de retrasos ocasionados por terceros (servicios postales o de mensajería).</p>
+
+              <p><strong>4. Servicio al Cliente y No Discriminación</strong><br>
+              - Esta oficina mantiene un trato respetuoso, digno y profesional con todos los clientes. - No se permite la discriminación por motivos de raza, color, religión, sexo, orientación sexual, nacionalidad, edad, discapacidad o estatus migratorio.</p>
+
+              <p><strong>5. Honorarios y Cargos</strong><br>
+              - Los honorarios notariales se cobrarán de acuerdo con la ley del Estado de Florida. - Cualquier servicio adicional se informará al cliente antes de ser prestado. - Se emitirá un recibo por todos los servicios realizados.</p>
+
+              <p><strong>6. Seguridad y Confidencialidad</strong><br>
+              - Toda la información y documentos recibidos se manejan bajo estricta confidencialidad. - Esta oficina está equipada con cámaras de seguridad para la protección de clientes y personal. - Las amenazas, la intimidación o los actos de violencia no serán tolerados.</p>
+
+              <p><strong>7. Protección contra Amenazas</strong><br>
+              - La oficina está protegida bajo: - Estatutos de Florida § 836.05 – Extorsión/Amenazas</p>
+            </div>
+
+            <!-- English -->
+            <div class="lang-en">
+              <p><strong>1. Transparency and Legality</strong><br>
+              - HGC always acts in accordance with the laws of the State of Florida, including Chapter 117 Florida Statutes – Notaries Public. - Legal advice or immigration representation is not provided, as established by law. - All services are carried out transparently, with written records and clear receipts of the processes performed.</p>
+
+              <p><strong>2. Delivery and Custody of Documents</strong><br>
+              - All documents received will be delivered only to their rightful owner. - The office does not retain immigration or personal documents once they have been processed. - Upon request, clients may receive copies of the delivered documents for their records. - An administrative control file may be maintained only for administrative purposes and does not constitute undue retention.</p>
+
+              <p><strong>3. Client Communication</strong><br>
+              - All clients must maintain active communication via email during ongoing processes. - Physical documents will only be sent through certified courier services (UPS or equivalent). - The client is responsible for covering shipping and handling costs. - The office is not responsible for delays caused by third parties (postal or courier services).</p>
+
+              <p><strong>4. Customer Service and Non-Discrimination</strong><br>
+              - This office maintains respectful, dignified, and professional treatment of all clients. - Discrimination is not permitted based on race, color, religion, sex, sexual orientation, nationality, age, disability, or immigration status.</p>
+
+              <p><strong>5. Fees and Charges</strong><br>
+              - Notary fees will be charged in accordance with Florida State law. - Any additional services will be disclosed to the client before being provided. - A receipt will be issued for all services performed.</p>
+
+              <p><strong>6. Security and Confidentiality</strong><br>
+              - All information and documents received are handled under strict confidentiality. - This office is equipped with security cameras for the protection of clients and staff. - Threats, intimidation, or acts of violence will not be tolerated.</p>
+
+              <p><strong>7. Protection Against Threats</strong><br>
+              - The office is protected under: - Florida Statutes § 836.05 – Extortion/Threats</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== POLÍTICAS / AVISOS LEGALES ===== -->
+      <section id="politicas" class="section">
+        <div class="card">
+          <h2 class="lang-es">📌 Avisos Legales para Exhibición en la Oficina</h2>
+          <h2 class="lang-en">📌 Legal Notice for Office Display</h2>
+          <div class="prose">
+            <!-- Español -->
+            <div class="lang-es">
+              <p><strong>📌 Importante</strong><br>
+              I AM NOT AN ATTORNEY LICENSED TO PRACTICE LAW. I MAY NOT GIVE LEGAL ADVICE OR ACCEPT FEES FOR LEGAL ADVICE. I AM NOT ACCREDITED TO REPRESENT YOU IN IMMIGRATION MATTERS.</p>
+
+              <p><strong>📌 Protección Legal</strong><br>
+              Esta oficina está protegida bajo las siguientes leyes: - Estatutos de Florida Capítulo 117 – Notaries Public (Regulación de notarios). - Estatutos de Florida § 836.05 – Extorsión/Amenazas (Prohíbe amenazas y extorsión). - Estatutos de Florida § 784.048 – Acoso / Persecución (Cubre acoso, acecho y amenazas repetidas, incluidas comunicaciones electrónicas). - Primera Enmienda y Debido Proceso – Constitución de los EE. UU. (Protección contra acusaciones infundadas y derecho al debido proceso). Cualquier amenaza escrita, correo electrónico o mensaje podrá conservarse y utilizarse como evidencia legal.</p>
+
+              <p><strong>📌 Política de Documentos</strong><br>
+              - Todos los documentos recibidos se entregarán solo a su legítimo propietario. - Esta oficina no retiene documentos de inmigración ni personales una vez que han sido notificados al cliente. - Los clientes pueden solicitar una copia de los documentos entregados en cualquier momento.</p>
+
+              <p><strong>📌 Honorarios</strong><br>
+              Los servicios notariales se cobran de acuerdo con la ley del Estado de Florida. (Lista de tarifas disponible a solicitud).</p>
+
+              <p><strong>📌 Compromiso de Igualdad de Oportunidades</strong><br>
+              Esta oficina no discrimina por motivos de: raza, color, religión, sexo, origen nacional, edad, discapacidad o estatus migratorio.</p>
+
+              <p><strong>📌 Seguridad</strong><br>
+              Esta oficina se encuentra bajo videovigilancia para la protección de clientes y personal.</p>
+            </div>
+
+            <!-- English -->
+            <div class="lang-en">
+              <p><strong>📌 Important</strong><br>
+              I AM NOT AN ATTORNEY LICENSED TO PRACTICE LAW. I MAY NOT GIVE LEGAL ADVICE OR ACCEPT FEES FOR LEGAL ADVICE. I AM NOT ACCREDITED TO REPRESENT YOU IN IMMIGRATION MATTERS.</p>
+
+              <p><strong>📌 Legal Protection</strong><br>
+              This office is protected under the following laws: - Florida Statutes Chapter 117 – Notaries Public (Regulation of notaries). - Florida Statutes § 836.05 – Extortion/Threats (Prohibits threats and extortion). - Florida Statutes § 784.048 – Stalking / Harassment (Covers harassment, stalking, and repeated threats, including electronic communications). - First Amendment & Due Process – U.S. Constitution (Protection against unfounded accusations and the right to due process). Any written threat, email, or message may be retained and used as legal evidence.</p>
+
+              <p><strong>📌 Document Policy</strong><br>
+              - All documents received will be delivered only to their rightful owner. - This office does not retain immigration or personal documents once they have been notified to the client. - Clients may request a copy of delivered documents at any time.</p>
+
+              <p><strong>📌 Fees</strong><br>
+              Notary services are charged in accordance with Florida State law. (Fee schedule available upon request).</p>
+
+              <p><strong>📌 Equal Opportunity Commitment</strong><br>
+              This office does not discriminate on the basis of: race, color, religion, sex, national origin, age, disability, or immigration status.</p>
+
+              <p><strong>📌 Security</strong><br>
+              This office is under video surveillance for the protection of clients and staff.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== FOOTER ===== -->
+      <footer>
+        <div class="lang-es">📱 Instagram: @serviceshilda | 📞 Teléfono: 7868731859 | 📧 Correo: serviceshilda@gmail.com | 📍 Dirección: 1631 W 37th St unidad 410 Hialeah FL 33012</div>
+        <div class="lang-en">📱 Instagram: @serviceshilda | 📞 Phone: 7868731859 | 📧 Email: serviceshilda@gmail.com | 📍 Address: 1631 W 37th St unit 410 Hialeah FL 33012</div>
+      </footer>
+
+    </div>
   </main>
 
-  <footer>
-    <p>📱 Instagram: @serviceshilda | 📞 Teléfono: 7868731859 | 📧 Correo: serviceshilda@gmail.com | 📍 Dirección: 1631 W 37th St unidad 410 Hialeah FL 33012</p>
-  </footer>
-
   <script>
+    // ===== Tabs with animation =====
+    const tabs = document.querySelectorAll('.btn-tab');
+    const sections = document.querySelectorAll('.section');
+
     function showSection(id) {
-      document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+      sections.forEach(s => s.classList.remove('active'));
       document.getElementById(id).classList.add('active');
+      tabs.forEach(b => b.classList.toggle('active', b.dataset.tab === id));
     }
 
-    function toggleTheme() {
-      const body = document.body;
-      body.dataset.theme = body.dataset.theme === 'dark' ? 'light' : 'dark';
+    tabs.forEach(btn => btn.addEventListener('click', () => showSection(btn.dataset.tab)));
+
+    // ===== Theme switch (blue darker in dark, lighter in light) =====
+    const themeBtn = document.getElementById('themeBtn');
+    const mqDark = window.matchMedia('(prefers-color-scheme: dark)');
+
+    function applyTheme(t) {
+      document.documentElement.setAttribute('data-theme', t);
+      themeBtn.textContent = t === 'dark' ? '🌞' : '🌙';
     }
+
+    // default to light, but respect prior choice
+    const savedTheme = localStorage.getItem('hgc-theme');
+    applyTheme(savedTheme || 'light');
+
+    themeBtn.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme') || 'light';
+      const next = current === 'light' ? 'dark' : 'light';
+      applyTheme(next);
+      localStorage.setItem('hgc-theme', next);
+    });
+
+    // ===== Language switch (🇪🇸 default) =====
+    const btnEs = document.getElementById('btn-es');
+    const btnEn = document.getElementById('btn-en');
 
     function setLang(lang) {
-      document.body.dataset.lang = lang;
-      document.querySelectorAll('[data-es]').forEach(el => {
-        el.innerText = el.getAttribute(`data-${lang}`);
-      });
+      document.documentElement.setAttribute('data-lang', lang);
+      localStorage.setItem('hgc-lang', lang);
     }
+
+    const savedLang = localStorage.getItem('hgc-lang') || 'es';
+    setLang(savedLang);
+
+    btnEs.addEventListener('click', () => setLang('es'));
+    btnEn.addEventListener('click', () => setLang('en'));
+
+    // Start on Home
+    showSection('home');
   </script>
 </body>
 </html>
