@@ -1,376 +1,219 @@
 <!DOCTYPE html>
-<html lang="es" data-theme="dark" data-lang="es">
+<html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>HGC Informativo</title>
-
-  <!-- Fuentes guapas -->
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
   <style>
-    /* ========= THEME TOKENS ========= */
-    :root{
-      --radius: 22px;
-      --shadow-3d: 0 12px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.04);
-      --text-soft: rgba(255,255,255,.75);
-    }
-    /* LIGHT: azul clarito + texto negro */
-    [data-theme="light"]{
-      --bg: #f3f7ff;
-      --panel: #ffffff;
-      --text: #0b1220;
-      --accent: #58aefc;      /* azul más clarito */
-      --accent-2: #2d7ef4;
-      --chip: rgba(45,126,244,.08);
-      --border: rgba(45,126,244,.25);
-      --nav-grad: linear-gradient(90deg, #1a6be0 0%, #58aefc 100%);
-    }
-    /* DARK: azul más oscuro + texto claro */
-    [data-theme="dark"]{
-      --bg: #0b1220;
-      --panel: #111827;
-      --text: #e9f1ff;
-      --accent: #0e3ea8;      /* azul oscuro para dark */
-      --accent-2: #1c66ff;
-      --chip: rgba(28,102,255,.08);
-      --border: rgba(28,102,255,.28);
-      --nav-grad: linear-gradient(90deg, #0e3ea8 0%, #1c66ff 100%);
+    :root {
+      --blue-light: #4da6ff;
+      --blue-dark: #0059b3;
+      --bg-light: #ffffff;
+      --bg-dark: #0d1117;
+      --text-light: #0d1117;
+      --text-dark: #e6f0ff;
     }
 
-    /* ========= BASE ========= */
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      background:
-        radial-gradient(1200px 600px at -10% -20%, rgba(88,174,252,.07), transparent 60%),
-        radial-gradient(1000px 500px at 110% 10%, rgba(28,102,255,.06), transparent 60%),
-        var(--bg);
-      color:var(--text);
-      transition: background .35s ease, color .35s ease;
+    [data-theme="light"] {
+      --bg-color: var(--bg-light);
+      --text-color: var(--text-light);
+      --accent: var(--blue-light);
+      --card-bg: #f9fbff;
     }
 
-    /* ========= NAV ========= */
-    header{
-      position:sticky; top:0; z-index:50;
-      padding:12px 18px;
-      background:var(--nav-grad);
-      box-shadow:0 10px 30px rgba(0,0,0,.25);
-    }
-    .nav{
-      max-width:1100px; margin:0 auto;
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-    }
-    .brand{
-      font-family:'Orbitron', sans-serif;
-      font-weight:700; letter-spacing:.5px;
-      color:#fff; font-size: clamp(1.1rem, 1.2rem + 1vw, 2rem);
-      text-shadow: 0 2px 10px rgba(0,0,0,.35);
-      white-space:nowrap;
-    }
-    .tabs{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
-    .tab{
-      border:1px solid rgba(255,255,255,.18);
-      background: rgba(255,255,255,.12);
-      color:#fff;
-      padding:10px 14px; border-radius:999px;
-      font-weight:700; cursor:pointer;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.28);
-      transition: transform .15s ease, background .2s ease, box-shadow .2s ease;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .tab:hover{ transform: translateY(-1px) }
-    .tab.active{
-      background:#fff; color:#0b1220;
-      box-shadow:0 8px 20px rgba(0,0,0,.2);
-    }
-    .controls{display:flex; align-items:center; gap:8px}
-    .icon-btn{
-      border:1px solid rgba(255,255,255,.25);
-      background: rgba(255,255,255,.12);
-      color:#fff; font-size:20px; line-height:1;
-      width:38px; height:38px; display:grid; place-items:center;
-      border-radius:12px; cursor:pointer;
-      transition: transform .15s ease, background .2s ease;
-    }
-    .icon-btn:active{ transform: scale(.97) }
-    .lang-btn{ width:auto; padding:8px 10px; gap:6px; font-size:18px }
-
-    /* ========= LAYOUT ========= */
-    main{ max-width:1100px; margin:26px auto; padding: 0 16px 80px }
-    .section{ display:none; }
-    .section.active{ display:block; }
-
-    /* animaciones entre páginas */
-    .enter{ animation: enter .45s ease both }
-    .leave{ animation: leave .35s ease both }
-    @keyframes enter{ from{opacity:0; transform:translateY(18px) scale(.98)} to{opacity:1; transform:translateY(0) scale(1)} }
-    @keyframes leave{ from{opacity:1; transform:translateY(0) scale(1)} to{opacity:0; transform:translateY(8px) scale(.98)} }
-
-    /* ========= BURBUJA 3D ========= */
-    .bubble{
-      position:relative;
-      margin: 18px auto;
-      padding: clamp(16px, 2.8vw, 28px);
-      border-radius: var(--radius);
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)) , var(--panel);
-      border:1px solid var(--border);
-      box-shadow: var(--shadow-3d);
-      backdrop-filter: blur(8px);
-      max-width: 980px;
-      overflow:hidden;
-    }
-    .bubble::before{
-      /* brillo suave */
-      content:""; position:absolute; inset:-2px;
-      background: radial-gradient(600px 120px at 10% 0%, rgba(255,255,255,.18), transparent 60%);
-      pointer-events:none;
-    }
-    .bubble h2{
-      margin:0 0 10px 0;
-      font-family:'Orbitron', sans-serif;
-      color:var(--accent-2);
-      letter-spacing:.5px;
-      font-size: clamp(1.1rem, 1rem + 1.2vw, 1.8rem);
-      text-shadow: 0 2px 10px rgba(0,0,0,.25);
-    }
-    .muted{ color: var(--text-soft) }
-
-    /* texto legal preservado tal cual */
-    .legal-block{
-      white-space: pre-wrap;    /* respeta saltos y espacios */
-      margin:0;
-      line-height: 1.5;
-      font-size: clamp(.95rem, .9rem + .4vw, 1.05rem);
+    [data-theme="dark"] {
+      --bg-color: var(--bg-dark);
+      --text-color: var(--text-dark);
+      --accent: var(--blue-dark);
+      --card-bg: rgba(255, 255, 255, 0.04);
     }
 
-    /* ========= CONTACTO ========= */
-    .contact{
-      display:grid; gap:10px;
-      grid-template-columns: 1fr;
-    }
-    .chip{
-      display:flex; align-items:center; gap:10px;
-      background: var(--chip);
-      border:1px solid var(--border);
-      padding:12px 14px; border-radius:14px;
-      font-weight:600;
-    }
-    .chip a{ color:inherit; text-decoration:none }
-    .contact-grid{
-      display:grid; gap:12px;
-      grid-template-columns: 1fr;
-    }
-    @media (min-width:700px){
-      .contact-grid{ grid-template-columns: repeat(2, 1fr) }
-    }
-    @media (min-width:1024px){
-      .contact-grid{ grid-template-columns: repeat(4, 1fr) }
+    body {
+      margin: 0;
+      font-family: 'Roboto', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      transition: background 0.3s, color 0.3s;
+      line-height: 1.6;
     }
 
-    /* ========= FOOTER ========= */
-    footer{
-      position: relative;
-      margin-top: 40px;
-      padding: 26px 16px;
-      background: var(--nav-grad);
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: var(--accent);
+      font-family: 'Orbitron', sans-serif;
       color: #fff;
-      box-shadow: 0 -10px 30px rgba(0,0,0,.25);
     }
-    .foot{max-width:1100px; margin:0 auto; font-weight:600}
 
-    /* accesibilidad foco */
-    :focus-visible{ outline:2px solid var(--accent-2); outline-offset:2px; border-radius:8px }
+    nav button {
+      background: var(--accent);
+      border: none;
+      color: white;
+      padding: 0.5rem 1rem;
+      margin: 0 0.3rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    nav button:hover {
+      opacity: 0.85;
+    }
+
+    .lang-switch button {
+      font-size: 1.1rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      margin-left: 0.5rem;
+    }
+
+    .section {
+      display: none;
+      padding: 2rem;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    .active {
+      display: block;
+    }
+
+    .card {
+      background: var(--card-bg);
+      padding: 1.8rem;
+      border-radius: 12px;
+      margin: 1.5rem auto;
+      max-width: 900px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      border-left: 5px solid var(--accent);
+    }
+
+    h2 {
+      font-family: 'Orbitron', sans-serif;
+      color: var(--accent);
+      margin-top: 0;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      background: var(--accent);
+      color: white;
+    }
+
+    footer p {
+      margin: 0;
+      font-size: 0.9rem;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
   </style>
 </head>
-
-<body>
-  <!-- NAV -->
+<body data-theme="dark" data-lang="es">
   <header>
-    <div class="nav">
-      <div class="brand">HGC Informativo</div>
-
-      <div class="tabs" role="tablist" aria-label="Páginas">
-        <button class="tab active" data-tab="home" id="tab-home" role="tab" aria-controls="home" aria-selected="true" data-i18n="nav.home">Home</button>
-        <button class="tab" data-tab="informativo" id="tab-informativo" role="tab" aria-controls="informativo" aria-selected="false" data-i18n="nav.info">Informativo</button>
-        <button class="tab" data-tab="politicas" id="tab-politicas" role="tab" aria-controls="politicas" aria-selected="false" data-i18n="nav.policies">Políticas</button>
+    <h1>HGC Informativo</h1>
+    <div style="display:flex; align-items:center;">
+      <nav>
+        <button onclick="showSection('home')">Home</button>
+        <button onclick="showSection('informativo')">Informativo</button>
+        <button onclick="showSection('politicas')">Políticas</button>
+      </nav>
+      <div class="lang-switch">
+        <button onclick="setLang('es')">🇪🇸</button>
+        <button onclick="setLang('en')">🇺🇸</button>
       </div>
-
-      <div class="controls">
-        <!-- Idioma: solo IU (los textos legales quedan EXACTOS) -->
-        <button class="icon-btn lang-btn" id="btn-es" aria-label="Español" title="Español">🇪🇸</button>
-        <button class="icon-btn lang-btn" id="btn-en" aria-label="English" title="English">🇺🇸</button>
-        <!-- Tema -->
-        <button class="icon-btn" id="themeBtn" aria-label="Cambiar tema" title="Modo claro/oscuro">🌙</button>
-      </div>
+      <button onclick="toggleTheme()" style="margin-left:1rem;">🌙</button>
     </div>
   </header>
 
   <main>
-    <!-- HOME -->
     <section id="home" class="section active">
-      <div class="bubble enter">
-        <h2 data-i18n="home.title">Bienvenido</h2>
-        <p class="muted" data-i18n="home.lead">
-          Explora nuestras secciones: Home, Informativo y Políticas. Tema blanco y azul con animaciones suaves, diseño responsive y modo claro/oscuro con azules adaptados.
+      <div class="card">
+        <h2 data-es="Bienvenido" data-en="Welcome">Bienvenido</h2>
+        <p data-es="Explora nuestras secciones: Home, Informativo y Políticas. Tema blanco y azul con animaciones suaves, diseño responsive y modo claro/oscuro con azules adaptados." 
+           data-en="Explore our sections: Home, Informative and Policies. White and blue theme with smooth animations, responsive design and light/dark mode with adapted blues.">
+           Explora nuestras secciones: Home, Informativo y Políticas. Tema blanco y azul con animaciones suaves, diseño responsive y modo claro/oscuro con azules adaptados.
         </p>
       </div>
-
-      <div class="bubble">
-        <h2 data-i18n="home.shortcuts">Atajos</h2>
-        <p class="muted" data-i18n="home.hint">
-          Consejo: toca en Informativo para ver la descripción de HGC exactamente como nos la diste, y en Políticas para ver todas las políticas y avisos legales sin modificar.
+      <div class="card">
+        <h2 data-es="Atajos" data-en="Shortcuts">Atajos</h2>
+        <p data-es="Consejo: toca en Informativo para ver la descripción de HGC exactamente como nos la diste, y en Políticas para ver todas las políticas y avisos legales sin modificar." 
+           data-en="Tip: Tap on Informative to see the exact HGC description as you gave it to us, and on Policies to see all policies and legal notices without modification.">
+           Consejo: toca en Informativo para ver la descripción de HGC exactamente como nos la diste, y en Políticas para ver todas las políticas y avisos legales sin modificar.
         </p>
-      </div>
-
-      <div class="bubble">
-        <h2 data-i18n="home.contactTitle">Contáctenos</h2>
-        <div class="contact-grid">
-          <div class="chip">📱 Instagram: <a href="https://instagram.com/serviceshilda" target="_blank" rel="noopener">@serviceshilda</a></div>
-          <div class="chip">📞 Teléfono: <a href="tel:7868731859">7868731859</a></div>
-          <div class="chip">📧 Correo electrónico: <a href="mailto:serviceshilda@gmail.com">serviceshilda@gmail.com</a></div>
-          <div class="chip">📍 Dirección: 1651 w 37 th st unidad 410 hialeah fl 33012</div>
-        </div>
       </div>
     </section>
 
-    <!-- INFORMATIVO (TEXTO ESPAÑOL EXACTO) -->
-    <section id="informativo" class="section" aria-labelledby="tab-informativo">
-      <div class="bubble">
-        <h2>Página Informativa – HGC</h2>
-        <pre class="legal-block">Página Informativa – HGC ¿Quiénes Somos?HGC es una oficina de servicios administrativos que trabaja con transparencia, responsabilidad y apego a la ley. No somos abogados ni brindamos asesoría legal, pero apoyamos a nuestros clientes en la gestión documental y en trámites administrativos de manera clara y segura. Aviso Legal “I AM NOT AN ATTORNEY LICENSED TO PRACTICE LAW. I MAY NOT GIVE LEGAL ADVICE OR ACCEPT FEES FOR LEGAL ADVICE. I AM NOT ACCREDITED TO REPRESENT YOU IN IMMIGRATION MATTERS.” Nuestras Políticas Comunicación: Todos los clientes deben mantener comunicación activa vía correo electrónico durante los procesos en curso. Entrega de Documentos: Los documentos físicos se envían únicamente mediante mensajería certificada (UPS o equivalente). El cliente cubre los gastos de envío y manejo. La oficina no es responsable de retrasos ocasionados por terceros (servicios postales o de mensajería). Custodia de Documentos: No retenemos documentos migratorios ni personales una vez entregados. El cliente puede solicitar copia de lo entregado en cualquier momento. Trato al Cliente: Atendemos a todos con respeto, dignidad y sin discriminación. Honorarios: Los servicios se cobran conforme a la ley del Estado de Florida y se emite comprobante por cada gestión. Seguridad y Confidencialidad: La información se maneja con total reserva y la oficina cuenta con medidas de seguridad. 🛡️ Protección Legal HGC se ampara en: Florida Statutes Chapter 117 – Notaries Public Florida Statutes § 836.05 – Extortion/Threats Florida Statutes § 784.048 – Stalking/Harassment First Amendment & Due Process – U.S. Constitution 👉 Esto significa que cualquier amenaza, difamación o intento de intimidación podrá ser usado como evidencia legal. 🤝 Nuestro Compromiso Brindar un servicio responsable y transparente. Manejar su información con absoluta confidencialidad. Responder siempre en tiempo y forma, conforme a la ley. Garantizar un ambiente de respeto, seguridad y confianza. Misión – HGC Brindar servicios administrativos y notariales con total transparencia, respeto a la ley del Estado de Florida (Florida Statutes Chapter 117 – Notaries Public) y apego a la ética profesional, garantizando que cada gestión documental se realice de manera segura, confiable y con la debida protección de los derechos de nuestros clientes. Visión – HGC Consolidarnos como una oficina de referencia en Florida por nuestro compromiso con la legalidad, la confidencialidad y la protección del cliente, destacando por ofrecer un servicio accesible, confiable y sustentado en el cumplimiento de la ley, generando confianza en cada trámite y contribuyendo a la tranquilidad y seguridad jurídica de quienes confían en nosotros.</pre>
-      </div>
-    </section>
-
-    <!-- POLÍTICAS (BLOQUE INGLÉS EXACTO) -->
-    <section id="politicas" class="section" aria-labelledby="tab-politicas">
-      <div class="bubble">
-        <h2>Office Policies – HGC / Legal Notices</h2>
-        <pre class="legal-block">📌 Office Policies – HGC
-1. Transparency and Legality
-- HGC always acts in accordance with the laws of the State of Florida, including Chapter 117 Florida Statutes – Notaries Public. - Legal advice or immigration representation is not provided, as established by law. - All services are carried out transparently, with written records and clear receipts of the processes performed.
-2. Delivery and Custody of Documents
-- All documents received will be delivered only to their rightful owner. - The office does not retain immigration or personal documents once they have been processed. - Upon request, clients may receive copies of the delivered documents for their records. - An administrative control file may be maintained only for administrative purposes and does not constitute undue retention.
-3. Client Communication
-- All clients must maintain active communication via email during ongoing processes. - Physical documents will only be sent through certified courier services (UPS or equivalent). - The client is responsible for covering shipping and handling costs. - The office is not responsible for delays caused by third parties (postal or courier services).
-4. Customer Service and Non-Discrimination
-- This office maintains respectful, dignified, and professional treatment of all clients. - Discrimination is not permitted based on race, color, religion, sex, sexual orientation, nationality, age, disability, or immigration status.
-5. Fees and Charges
-- Notary fees will be charged in accordance with Florida State law. - Any additional services will be disclosed to the client before being provided. - A receipt will be issued for all services performed.
-6. Security and Confidentiality
-- All information and documents received are handled under strict confidentiality. - This office is equipped with security cameras for the protection of clients and staff. - Threats, intimidation, or acts of violence will not be tolerated.
-7. Protection Against Threats
+    <section id="informativo" class="section">
+      <div class="card">
+        <h2>📌 Office Policies – HGC</h2>
+        <p>
+1. Transparency and Legality<br>
+- HGC always acts in accordance with the laws of the State of Florida, including Chapter 117 Florida Statutes – Notaries Public. - Legal advice or immigration representation is not provided, as established by law. - All services are carried out transparently, with written records and clear receipts of the processes performed.<br><br>
+2. Delivery and Custody of Documents<br>
+- All documents received will be delivered only to their rightful owner. - The office does not retain immigration or personal documents once they have been processed. - Upon request, clients may receive copies of the delivered documents for their records. - An administrative control file may be maintained only for administrative purposes and does not constitute undue retention.<br><br>
+3. Client Communication<br>
+- All clients must maintain active communication via email during ongoing processes. - Physical documents will only be sent through certified courier services (UPS or equivalent). - The client is responsible for covering shipping and handling costs. - The office is not responsible for delays caused by third parties (postal or courier services).<br><br>
+4. Customer Service and Non-Discrimination<br>
+- This office maintains respectful, dignified, and professional treatment of all clients. - Discrimination is not permitted based on race, color, religion, sex, sexual orientation, nationality, age, disability, or immigration status.<br><br>
+5. Fees and Charges<br>
+- Notary fees will be charged in accordance with Florida State law. - Any additional services will be disclosed to the client before being provided. - A receipt will be issued for all services performed.<br><br>
+6. Security and Confidentiality<br>
+- All information and documents received are handled under strict confidentiality. - This office is equipped with security cameras for the protection of clients and staff. - Threats, intimidation, or acts of violence will not be tolerated.<br><br>
+7. Protection Against Threats<br>
 - The office is protected under: - Florida Statutes § 836.05 – Extortion/Threats
+        </p>
+      </div>
+    </section>
 
-📌 Legal Notice for Office Display
-📌 Important
-I AM NOT AN ATTORNEY LICENSED TO PRACTICE LAW. I MAY NOT GIVE LEGAL ADVICE OR ACCEPT FEES FOR LEGAL ADVICE. I AM NOT ACCREDITED TO REPRESENT YOU IN IMMIGRATION MATTERS.
-📌 Legal Protection
-This office is protected under the following laws: - Florida Statutes Chapter 117 – Notaries Public (Regulation of notaries). - Florida Statutes § 836.05 – Extortion/Threats (Prohibits threats and extortion). - Florida Statutes § 784.048 – Stalking / Harassment (Covers harassment, stalking, and repeated threats, including electronic communications). - First Amendment & Due Process – U.S. Constitution (Protection against unfounded accusations and the right to due process). Any written threat, email, or message may be retained and used as legal evidence.
-📌 Document Policy
-- All documents received will be delivered only to their rightful owner. - This office does not retain immigration or personal documents once they have been notified to the client. - Clients may request a copy of delivered documents at any time.
-📌 Fees
-Notary services are charged in accordance with Florida State law. (Fee schedule available upon request).
-📌 Equal Opportunity Commitment
-This office does not discriminate on the basis of: race, color, religion, sex, national origin, age, disability, or immigration status.
-📌 Security
-This office is under video surveillance for the protection of clients and staff.</pre>
+    <section id="politicas" class="section">
+      <div class="card">
+        <h2>📌 Legal Notice for Office Display</h2>
+        <p>
+📌 Important<br>
+I AM NOT AN ATTORNEY LICENSED TO PRACTICE LAW. I MAY NOT GIVE LEGAL ADVICE OR ACCEPT FEES FOR LEGAL ADVICE. I AM NOT ACCREDITED TO REPRESENT YOU IN IMMIGRATION MATTERS.<br><br>
+📌 Legal Protection<br>
+This office is protected under the following laws: - Florida Statutes Chapter 117 – Notaries Public (Regulation of notaries). - Florida Statutes § 836.05 – Extortion/Threats (Prohibits threats and extortion). - Florida Statutes § 784.048 – Stalking / Harassment (Covers harassment, stalking, and repeated threats, including electronic communications). - First Amendment & Due Process – U.S. Constitution (Protection against unfounded accusations and the right to due process). Any written threat, email, or message may be retained and used as legal evidence.<br><br>
+📌 Document Policy<br>
+- All documents received will be delivered only to their rightful owner. - This office does not retain immigration or personal documents once they have been notified to the client. - Clients may request a copy of delivered documents at any time.<br><br>
+📌 Fees<br>
+Notary services are charged in accordance with Florida State law. (Fee schedule available upon request).<br><br>
+📌 Equal Opportunity Commitment<br>
+This office does not discriminate on the basis of: race, color, religion, sex, national origin, age, disability, or immigration status.<br><br>
+📌 Security<br>
+This office is under video surveillance for the protection of clients and staff.
+        </p>
       </div>
     </section>
   </main>
 
   <footer>
-    <div class="foot">
-      📱 Instagram: @serviceshilda | 📞 Teléfono: 7868731859 | 📧 Correo electrónico: serviceshilda@gmail.com | 📍 Dirección: 1651 w 37 th st unidad 410 hialeah fl 33012
-    </div>
+    <p>📱 Instagram: @serviceshilda | 📞 Teléfono: 7868731859 | 📧 Correo: serviceshilda@gmail.com | 📍 Dirección: 1631 W 37th St unidad 410 Hialeah FL 33012</p>
   </footer>
 
   <script>
-    /* ===== Animación y navegación ===== */
-    const tabs = document.querySelectorAll('.tab');
-    let current = document.querySelector('.section.active');
-
-    function showSection(id){
-      if (!id) return;
-      const next = document.getElementById(id);
-      if (next === current) return;
-
-      // visual tabs
-      tabs.forEach(t=>t.classList.toggle('active', t.dataset.tab===id));
-
-      // animación de salida/entrada
-      current.classList.remove('active'); current.classList.remove('enter');
-      current.classList.add('leave');
-      setTimeout(()=>{ current.classList.remove('leave'); }, 350);
-
-      next.classList.add('active','enter');
-      current = next;
-
-      // scroll arriba en móvil
-      window.scrollTo({top:0, behavior:'smooth'});
+    function showSection(id) {
+      document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
     }
-    tabs.forEach(btn=>{
-      btn.addEventListener('click', ()=> showSection(btn.dataset.tab));
-    });
 
-    /* ===== Tema claro/oscuro ===== */
-    const themeBtn = document.getElementById('themeBtn');
-    function setTheme(mode){
-      document.documentElement.setAttribute('data-theme', mode);
-      themeBtn.textContent = mode === 'dark' ? '🌙' : '☀️';
-      localStorage.setItem('hgc-theme', mode);
+    function toggleTheme() {
+      const body = document.body;
+      body.dataset.theme = body.dataset.theme === 'dark' ? 'light' : 'dark';
     }
-    themeBtn.addEventListener('click', ()=>{
-      const now = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-      setTheme(now);
-    });
-    // iniciar con preferencia guardada o sistema
-    (function initTheme(){
-      const saved = localStorage.getItem('hgc-theme');
-      if(saved){ setTheme(saved); }
-      else if(window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches){ setTheme('light'); }
-      else{ setTheme('dark'); }
-    })();
 
-    /* ===== Idioma (solo IU) ===== */
-    const i18n = {
-      es:{
-        'nav.home':'Home',
-        'nav.info':'Informativo',
-        'nav.policies':'Políticas',
-        'home.title':'Bienvenido',
-        'home.lead':'Explora nuestras secciones: Home, Informativo y Políticas. Tema blanco y azul con animaciones suaves, diseño responsive y modo claro/oscuro con azules adaptados.',
-        'home.shortcuts':'Atajos',
-        'home.hint':'Consejo: toca en Informativo para ver la descripción de HGC exactamente como nos la diste, y en Políticas para ver todas las políticas y avisos legales sin modificar.',
-        'home.contactTitle':'Contáctenos'
-      },
-      en:{
-        'nav.home':'Home',
-        'nav.info':'Informative',
-        'nav.policies':'Policies',
-        'home.title':'Welcome',
-        'home.lead':'Explore our sections: Home, Informative and Policies. White & blue theme with smooth animations, responsive design, and light/dark mode with adapted blues.',
-        'home.shortcuts':'Shortcuts',
-        'home.hint':'Tip: Tap on Informative to see HGC’s description exactly as provided, and on Policies to see all policies and legal notices unmodified.',
-        'home.contactTitle':'Contact'
-      }
-    };
-    function applyLang(lang){
-      document.documentElement.setAttribute('data-lang', lang);
-      document.querySelectorAll('[data-i18n]').forEach(el=>{
-        const key = el.getAttribute('data-i18n');
-        if(i18n[lang] && i18n[lang][key]) el.textContent = i18n[lang][key];
+    function setLang(lang) {
+      document.body.dataset.lang = lang;
+      document.querySelectorAll('[data-es]').forEach(el => {
+        el.innerText = el.getAttribute(`data-${lang}`);
       });
-      localStorage.setItem('hgc-lang', lang);
     }
-    document.getElementById('btn-es').addEventListener('click', ()=>applyLang('es'));
-    document.getElementById('btn-en').addEventListener('click', ()=>applyLang('en'));
-    (function initLang(){
-      const saved = localStorage.getItem('hgc-lang') || 'es';
-      applyLang(saved);
-    })();
   </script>
 </body>
 </html>
