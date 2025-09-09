@@ -9,7 +9,7 @@
     :root {
       --blue-light: #4da6ff;
       --blue-dark: #0059b3;
-      --bg-light: #ffffff;
+      --bg-light: #f5f9ff;
       --bg-dark: #0d1117;
       --text-light: #0d1117;
       --text-dark: #e6f0ff;
@@ -19,14 +19,12 @@
       --bg-color: var(--bg-light);
       --text-color: var(--text-light);
       --accent: var(--blue-light);
-      --card-bg: #f9fbff;
     }
 
     [data-theme="dark"] {
       --bg-color: var(--bg-dark);
       --text-color: var(--text-dark);
       --accent: var(--blue-dark);
-      --card-bg: rgba(255, 255, 255, 0.04);
     }
 
     body {
@@ -35,7 +33,6 @@
       background-color: var(--bg-color);
       color: var(--text-color);
       transition: background 0.3s, color 0.3s;
-      line-height: 1.6;
     }
 
     header {
@@ -43,9 +40,8 @@
       justify-content: space-between;
       align-items: center;
       padding: 1rem 2rem;
-      background: var(--accent);
+      background: linear-gradient(90deg, var(--accent), transparent);
       font-family: 'Orbitron', sans-serif;
-      color: #fff;
     }
 
     nav button {
@@ -54,17 +50,18 @@
       color: white;
       padding: 0.5rem 1rem;
       margin: 0 0.3rem;
-      border-radius: 8px;
+      border-radius: 12px;
       cursor: pointer;
+      transition: transform 0.2s;
       font-weight: bold;
     }
 
     nav button:hover {
-      opacity: 0.85;
+      transform: scale(1.05);
     }
 
     .lang-switch button {
-      font-size: 1.1rem;
+      font-size: 1.2rem;
       background: none;
       border: none;
       cursor: pointer;
@@ -74,7 +71,7 @@
     .section {
       display: none;
       padding: 2rem;
-      animation: fadeIn 0.5s ease-in-out;
+      animation: fadeIn 0.6s ease-in-out;
     }
 
     .active {
@@ -82,36 +79,36 @@
     }
 
     .card {
-      background: var(--card-bg);
-      padding: 1.8rem;
-      border-radius: 12px;
-      margin: 1.5rem auto;
-      max-width: 900px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      border-left: 5px solid var(--accent);
+      background: rgba(255, 255, 255, 0.05);
+      padding: 1.5rem;
+      border-radius: 20px;
+      margin: 1rem auto;
+      max-width: 1000px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--accent);
+      backdrop-filter: blur(6px);
+    }
+
+    .card p {
+      text-align: justify;
+      line-height: 1.8;
+      margin-bottom: 1rem;
     }
 
     h2 {
       font-family: 'Orbitron', sans-serif;
       color: var(--accent);
-      margin-top: 0;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     footer {
       text-align: center;
       padding: 1.5rem;
-      background: var(--accent);
-      color: white;
-    }
-
-    footer p {
-      margin: 0;
-      font-size: 0.9rem;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
+      background: linear-gradient(90deg, transparent, var(--accent));
     }
   </style>
 </head>
@@ -152,42 +149,56 @@
 
     <section id="informativo" class="section">
       <div class="card">
-        <h2>📌 Office Policies – HGC</h2>
+        <h2>📌 Página Informativa – HGC</h2>
         <p>
-1. Transparency and Legality<br>
-- HGC always acts in accordance with the laws of the State of Florida, including Chapter 117 Florida Statutes – Notaries Public. - Legal advice or immigration representation is not provided, as established by law. - All services are carried out transparently, with written records and clear receipts of the processes performed.<br><br>
-2. Delivery and Custody of Documents<br>
-- All documents received will be delivered only to their rightful owner. - The office does not retain immigration or personal documents once they have been processed. - Upon request, clients may receive copies of the delivered documents for their records. - An administrative control file may be maintained only for administrative purposes and does not constitute undue retention.<br><br>
-3. Client Communication<br>
-- All clients must maintain active communication via email during ongoing processes. - Physical documents will only be sent through certified courier services (UPS or equivalent). - The client is responsible for covering shipping and handling costs. - The office is not responsible for delays caused by third parties (postal or courier services).<br><br>
-4. Customer Service and Non-Discrimination<br>
-- This office maintains respectful, dignified, and professional treatment of all clients. - Discrimination is not permitted based on race, color, religion, sex, sexual orientation, nationality, age, disability, or immigration status.<br><br>
-5. Fees and Charges<br>
-- Notary fees will be charged in accordance with Florida State law. - Any additional services will be disclosed to the client before being provided. - A receipt will be issued for all services performed.<br><br>
-6. Security and Confidentiality<br>
-- All information and documents received are handled under strict confidentiality. - This office is equipped with security cameras for the protection of clients and staff. - Threats, intimidation, or acts of violence will not be tolerated.<br><br>
-7. Protection Against Threats<br>
-- The office is protected under: - Florida Statutes § 836.05 – Extortion/Threats
+Página Informativa – HGC ¿Quiénes Somos? HGC es una oficina de servicios administrativos que trabaja con transparencia, responsabilidad y apego a la ley. No somos abogados ni brindamos asesoría legal, pero apoyamos a nuestros clientes en la gestión documental y en trámites administrativos de manera clara y segura.
+        </p>
+        <p>
+Aviso Legal: “I AM NOT AN ATTORNEY LICENSED TO PRACTICE LAW. I MAY NOT GIVE LEGAL ADVICE OR ACCEPT FEES FOR LEGAL ADVICE. I AM NOT ACCREDITED TO REPRESENT YOU IN IMMIGRATION MATTERS.”
+        </p>
+        <p>
+Nuestras Políticas Comunicación: Todos los clientes deben mantener comunicación activa vía correo electrónico durante los procesos en curso. 
+Entrega de Documentos: Los documentos físicos se envían únicamente mediante mensajería certificada (UPS o equivalente). El cliente cubre los gastos de envío y manejo. La oficina no es responsable de retrasos ocasionados por terceros (servicios postales o de mensajería).
+        </p>
+        <p>
+Custodia de Documentos: No retenemos documentos migratorios ni personales una vez entregados. El cliente puede solicitar copia de lo entregado en cualquier momento. 
+Trato al Cliente: Atendemos a todos con respeto, dignidad y sin discriminación.
+        </p>
+        <p>
+Honorarios: Los servicios se cobran conforme a la ley del Estado de Florida y se emite comprobante por cada gestión.
+Seguridad y Confidencialidad: La información se maneja con total reserva y la oficina cuenta con medidas de seguridad.
+        </p>
+        <p>
+🛡️ Protección Legal: HGC se ampara en: Florida Statutes Chapter 117 – Notaries Public, Florida Statutes § 836.05 – Extortion/Threats, Florida Statutes § 784.048 – Stalking/Harassment, First Amendment & Due Process – U.S. Constitution. 
+👉 Esto significa que cualquier amenaza, difamación o intento de intimidación podrá ser usado como evidencia legal.
+        </p>
+        <p>
+🤝 Nuestro Compromiso: Brindar un servicio responsable y transparente. Manejar su información con absoluta confidencialidad. Responder siempre en tiempo y forma, conforme a la ley. Garantizar un ambiente de respeto y profesionalismo.
         </p>
       </div>
     </section>
 
     <section id="politicas" class="section">
       <div class="card">
-        <h2>📌 Legal Notice for Office Display</h2>
+        <h2>📌 Políticas de Oficina – HGC</h2>
         <p>
-📌 Important<br>
-I AM NOT AN ATTORNEY LICENSED TO PRACTICE LAW. I MAY NOT GIVE LEGAL ADVICE OR ACCEPT FEES FOR LEGAL ADVICE. I AM NOT ACCREDITED TO REPRESENT YOU IN IMMIGRATION MATTERS.<br><br>
-📌 Legal Protection<br>
-This office is protected under the following laws: - Florida Statutes Chapter 117 – Notaries Public (Regulation of notaries). - Florida Statutes § 836.05 – Extortion/Threats (Prohibits threats and extortion). - Florida Statutes § 784.048 – Stalking / Harassment (Covers harassment, stalking, and repeated threats, including electronic communications). - First Amendment & Due Process – U.S. Constitution (Protection against unfounded accusations and the right to due process). Any written threat, email, or message may be retained and used as legal evidence.<br><br>
-📌 Document Policy<br>
-- All documents received will be delivered only to their rightful owner. - This office does not retain immigration or personal documents once they have been notified to the client. - Clients may request a copy of delivered documents at any time.<br><br>
-📌 Fees<br>
-Notary services are charged in accordance with Florida State law. (Fee schedule available upon request).<br><br>
-📌 Equal Opportunity Commitment<br>
-This office does not discriminate on the basis of: race, color, religion, sex, national origin, age, disability, or immigration status.<br><br>
-📌 Security<br>
-This office is under video surveillance for the protection of clients and staff.
+📌 Importante: I AM NOT AN ATTORNEY LICENSED TO PRACTICE LAW. I MAY NOT GIVE LEGAL ADVICE OR ACCEPT FEES FOR LEGAL ADVICE. I AM NOT ACCREDITED TO REPRESENT YOU IN IMMIGRATION MATTERS.
+        </p>
+        <p>
+📌 Protección Legal: Esta oficina está protegida bajo las siguientes leyes: Florida Statutes Chapter 117 – Notaries Public, Florida Statutes § 836.05 – Extortion/Threats, Florida Statutes § 784.048 – Stalking/Harassment, First Amendment & Due Process – U.S. Constitution. 
+Cualquier amenaza escrita, correo electrónico o mensaje podrá ser retenido y usado como evidencia legal.
+        </p>
+        <p>
+📌 Política de Documentos: Todos los documentos recibidos se entregarán únicamente a su dueño legítimo. Esta oficina no retiene documentos migratorios ni personales una vez notificados al cliente. El cliente puede solicitar copia de los documentos entregados en cualquier momento.
+        </p>
+        <p>
+📌 Honorarios: Los servicios notariales se cobran conforme a la ley del Estado de Florida. (Tarifa disponible bajo solicitud).
+        </p>
+        <p>
+📌 Compromiso de Igualdad: Esta oficina no discrimina por raza, color, religión, sexo, origen nacional, edad, discapacidad o estatus migratorio.
+        </p>
+        <p>
+📌 Seguridad: Esta oficina cuenta con videovigilancia para la protección de clientes y personal.
         </p>
       </div>
     </section>
