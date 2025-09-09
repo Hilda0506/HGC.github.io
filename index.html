@@ -1,799 +1,239 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>HGC Informativo</title>
-  
-  <!-- Fuentes elegantes y legibles -->
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Plus+Jakarta+Sans:wght@400;600;800&family=Playfair+Display:wght@600;800&display=swap" rel="stylesheet">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Roboto:wght@400;700&family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
 
   <style>
-    /* =====================
-       THEME & TOKENS
-    ====================== */
     :root {
-      /* Light mode (azul clarito + blanco) */
-      --bg: #f4f8ff;                 /* fondo muy claro azulado */
-      --bg-soft: #ffffff;            /* tarjetas */
-      --text: #0b1020;               /* texto negro/near-black */
-      --muted: #334155;              /* subtítulos */
-
-      --blue-1: #dbeafe;             /* bordes suaves */
-      --blue-2: #93c5fd;             /* detalles */
-      --blue-3: #3b82f6;             /* primario (light) */
-      --blue-4: #1e40af;             /* acento más fuerte */
-
-      --card-shadow: 0 10px 30px rgba(30, 64, 175, 0.18);
-      --ring: 0 0 0 3px rgba(59, 130, 246, 0.25);
-
-      /* Gradientes de fondo (tema planeta, solo azules) */
-      --space-grad-1: radial-gradient(1200px 800px at 10% -10%, rgba(59,130,246,0.20), transparent 60%);
-      --space-grad-2: radial-gradient(900px 600px at 100% 0%, rgba(30,64,175,0.22), transparent 60%);
-      --space-grad-3: radial-gradient(1100px 900px at 40% 120%, rgba(147,197,253,0.18), transparent 60%);
-
-      --glass: rgba(255,255,255,0.75);
-      --border-fade-1: #e0ecff;
-      --border-fade-2: #b6d3ff;
+      --blue-light: #4da6ff;
+      --blue-dark: #0a1f44;
+      --bg-light: #ffffff;
+      --bg-dark: #0a0f1c;
+      --text-light: #000000;
+      --text-dark: #ffffff;
     }
-
-    body.dark {
-      /* Dark mode (azules más oscuros) */
-      --bg: #050a14;                 /* base muy oscura */
-      --bg-soft: #0a162b;            /* tarjetas */
-      --text: #ffffff;               /* texto claro */
-      --muted: #b9c2d3;              /* subtítulos */
-
-      --blue-1: #12254a;             /* bordes */
-      --blue-2: #204d99;             /* detalles */
-      --blue-3: #2a75ff;             /* primario (dark) */
-      --blue-4: #0b3b8e;             /* acento fuerte */
-
-      --card-shadow: 0 12px 35px rgba(0, 17, 51, 0.55);
-      --ring: 0 0 0 3px rgba(42, 117, 255, 0.35);
-
-      --space-grad-1: radial-gradient(1200px 800px at 10% -10%, rgba(42,117,255,0.20), transparent 60%);
-      --space-grad-2: radial-gradient(900px 600px at 100% 0%, rgba(11,59,142,0.28), transparent 60%);
-      --space-grad-3: radial-gradient(1200px 900px at 40% 120%, rgba(17,43,102,0.35), transparent 60%);
-
-      --glass: rgba(10, 22, 43, 0.82);
-      --border-fade-1: #0e274b;
-      --border-fade-2: #113b7a;
-    }
-
-    /* =====================
-       BASE
-    ====================== */
-    * { box-sizing: border-box; }
-    html, body { height: 100%; }
 
     body {
       margin: 0;
-      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      transition: background 400ms ease, color 400ms ease;
+      font-family: 'Roboto', sans-serif;
+      background: var(--bg-light);
+      color: var(--text-light);
+      transition: background 0.5s, color 0.5s;
       overflow-x: hidden;
+      min-height: 100vh;
     }
 
-    /* Fondo temático (planeta/espacio solo azules) */
-    .space-bg {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background: var(--space-grad-1), var(--space-grad-2), var(--space-grad-3);
-      filter: saturate(120%);
-      z-index: 0;
+    body.dark {
+      background: var(--bg-dark);
+      color: var(--text-dark);
+      --blue-light: #2a75ff;
+      --blue-dark: #001a33;
     }
 
-    /* Pequeñas "estrellas" azules animadas */
-    .stars { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
-    .stars::before, .stars::after {
-      content: "";
-      position: absolute; inset: -20% -20% -20% -20%;
-      background-image:
-        radial-gradient(2px 2px at 20% 30%, rgba(147,197,253,0.8) 50%, transparent 52%),
-        radial-gradient(2px 2px at 70% 60%, rgba(59,130,246,0.8) 50%, transparent 52%),
-        radial-gradient(2px 2px at 40% 80%, rgba(147,197,253,0.7) 50%, transparent 52%),
-        radial-gradient(2px 2px at 85% 25%, rgba(59,130,246,0.7) 50%, transparent 52%);
-      animation: drift 40s linear infinite;
-      opacity: 0.25;
-    }
-    .stars::after { animation-duration: 55s; opacity: 0.3; }
-    @keyframes drift { from { transform: translateY(0); } to { transform: translateY(-6%); } }
-
-    /* =====================
-       HEADER & NAV
-    ====================== */
     header {
-      position: sticky; top: 0; z-index: 50;
-      background: linear-gradient(90deg, rgba(219,234,254,0.65), rgba(147,197,253,0.65));
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--blue-1);
-    }
-    body.dark header { background: linear-gradient(90deg, rgba(14,39,75,0.6), rgba(17,59,122,0.6)); }
-
-    .nav-wrap {
-      max-width: 1100px; margin: 0 auto; padding: 14px 18px;
-      display: flex; align-items: center; gap: 12px; justify-content: space-between;
-    }
-
-    .brand {
-      display: flex; align-items: center; gap: 10px; text-decoration: none;
-      color: var(--text);
-    }
-    .brand h1 {
-      font-family: 'Orbitron', sans-serif; letter-spacing: 1.5px; margin: 0; font-size: 1.35rem;
+      background: linear-gradient(90deg, var(--blue-light), var(--blue-dark));
+      color: white;
+      padding: 15px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.4);
     }
 
-    nav {
-      display: flex; gap: 10px; align-items: center;
-      background: linear-gradient(180deg, rgba(255,255,255,0.45), rgba(255,255,255,0.15));
-      border: 1px solid var(--blue-1);
-      padding: 6px; border-radius: 14px; box-shadow: var(--card-shadow);
-    }
-    body.dark nav { background: linear-gradient(180deg, rgba(10,22,43,0.55), rgba(10,22,43,0.2)); }
-
-    .nav-link {
-      appearance: none; border: 0; background: transparent; cursor: pointer; position: relative;
-      padding: 10px 14px; border-radius: 10px; font-weight: 700; color: var(--text);
-      transition: transform .2s ease;
-    }
-    .nav-link::after {
-      content: ""; position: absolute; inset: 0; border-radius: 10px;
-      background: radial-gradient(60% 100% at 50% 0%, rgba(59,130,246,0.18), transparent 70%);
-      opacity: 0; transition: opacity .25s ease;
-    }
-    .nav-link:hover { transform: translateY(-1px); }
-    .nav-link:hover::after { opacity: 1; }
-    .nav-link.active { color: #fff; background: linear-gradient(180deg, var(--blue-3), var(--blue-4)); box-shadow: 0 6px 18px rgba(30,64,175,0.35); }
-
-    .toggles { display: flex; gap: 8px; align-items: center; }
-    .btn {
-      appearance: none; border: 1px solid var(--blue-1); background: var(--bg-soft); color: var(--text);
-      padding: 8px 12px; border-radius: 10px; font-weight: 700; cursor: pointer; box-shadow: var(--card-shadow);
-      transition: transform .15s ease, box-shadow .2s ease, background .3s ease;
-    }
-    .btn:active { transform: translateY(1px) scale(0.99); }
-    .btn:focus-visible { outline: none; box-shadow: var(--ring); }
-
-    /* =====================
-       LAYOUT
-    ====================== */
-    .container { max-width: 1100px; margin: 0 auto; padding: 28px 18px 60px; position: relative; z-index: 1; }
-
-    /* Tarjetas-burbuja 3D (glass + borde degradado + sombra) */
-    .bubble {
-      position: relative; overflow: hidden; border-radius: 20px; padding: 24px; margin: 16px 0;
-      background: var(--glass);
-      border: 1px solid var(--border-fade-1);
-      box-shadow: var(--card-shadow);
-    }
-    .bubble::before { /* borde degradado suave */
-      content: ""; position: absolute; inset: -1px; border-radius: 22px; padding: 1px;
-      background: linear-gradient(135deg, var(--border-fade-1), var(--border-fade-2));
-      -webkit-mask: 
-        linear-gradient(#000 0 0) content-box, 
-        linear-gradient(#000 0 0);
-      -webkit-mask-composite: xor; mask-composite: exclude;
-      pointer-events: none;
-    }
-    .bubble::after { /* brillo 3D */
-      content: ""; position: absolute; top: -20%; left: -10%; width: 60%; height: 60%;
-      background: radial-gradient(closest-side, rgba(147,197,253,0.35), transparent 70%);
-      transform: rotate(8deg);
-      pointer-events: none;
+    header h1 {
+      font-family: 'Orbitron', sans-serif;
+      margin: 0;
+      font-size: 1.6rem;
+      letter-spacing: 2px;
     }
 
-    h2.section-title { 
-      font-family: 'Playfair Display', serif; font-weight: 800; margin: 6px 0 14px; 
-      color: var(--blue-4); letter-spacing: 0.3px; text-shadow: 0 1px 0 rgba(255,255,255,0.2);
+    nav a {
+      margin: 0 15px;
+      text-decoration: none;
+      color: white;
+      font-weight: 600;
+      transition: color 0.3s;
     }
-    body.dark h2.section-title { color: #b7ccff; text-shadow: 0 1px 0 rgba(0,0,0,0.3); }
 
-    .lead { color: var(--muted); font-weight: 600; }
+    nav a:hover {
+      color: var(--blue-light);
+    }
 
-    /* =====================
-       PAGES + TRANSITIONS
-    ====================== */
-    .page { display: none; opacity: 0; transform: translateY(8px) scale(0.995); }
-    .page.active { display: block; animation: enter .45s cubic-bezier(.22,.8,.36,1) forwards; }
-    .page.leaving { animation: leave .35s ease forwards; }
+    .toggle-mode {
+      background: white;
+      color: var(--blue-dark);
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s, color 0.3s;
+    }
 
-    @keyframes enter { from { opacity: 0; transform: translateY(8px) scale(0.995); } to { opacity: 1; transform: translateY(0) scale(1); } }
-    @keyframes leave { from { opacity: 1; transform: translateY(0) scale(1); } to { opacity: 0; transform: translateY(4px) scale(0.997); } }
+    body.dark .toggle-mode {
+      background: var(--blue-light);
+      color: white;
+    }
 
-    /* =====================
-       FOOTER
-    ====================== */
+    .container {
+      padding: 40px 20px;
+      max-width: 1000px;
+      margin: auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .page {
+      display: none;
+      opacity: 0;
+      transform: translateX(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .page.active {
+      display: block;
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    h2 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.8rem;
+      color: var(--blue-light);
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(8px);
+      border-radius: 16px;
+      padding: 25px;
+      margin-bottom: 25px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      font-family: 'Roboto', sans-serif;
+      line-height: 1.6;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 25px rgba(0,0,0,0.3);
+    }
+
+    body.dark .card {
+      background: rgba(15,25,50,0.9);
+      color: white;
+    }
+
     footer {
-      border-top: 1px solid var(--blue-1);
-      background: linear-gradient(180deg, rgba(255,255,255,0.55), rgba(255,255,255,0.25));
-      padding: 28px 18px; position: relative; z-index: 1;
-    }
-    body.dark footer { background: linear-gradient(180deg, rgba(10,22,43,0.55), rgba(10,22,43,0.25)); }
-    .foot-wrap { max-width: 1100px; margin: 0 auto; color: var(--text); }
-    .contact-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
-    .contact-grid a { color: inherit; text-decoration: none; font-weight: 700; }
-    .contact-grid a:hover { text-decoration: underline; }
-
-    /* =====================
-       RESPONSIVE
-    ====================== */
-    @media (min-width: 720px) {
-      .contact-grid { grid-template-columns: repeat(2, 1fr); }
-    }
-    @media (min-width: 980px) {
-      .contact-grid { grid-template-columns: repeat(4, 1fr); }
+      background: linear-gradient(90deg, var(--blue-dark), var(--blue-light));
+      color: white;
+      text-align: center;
+      padding: 25px;
+      font-size: 0.9rem;
+      margin-top: 40px;
     }
 
-    /* Accesibilidad: respeta reducción de movimiento */
-    @media (prefers-reduced-motion: reduce) {
-      .page.active, .page.leaving { animation: none !important; opacity: 1; transform: none; }
-      .nav-link:hover { transform: none; }
+    footer a {
+      color: #fff;
+      margin: 0 10px;
+      text-decoration: none;
+    }
+
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        text-align: center;
+      }
+      nav {
+        margin-top: 10px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="space-bg" aria-hidden="true"></div>
-  <div class="stars" aria-hidden="true"></div>
-
   <header>
-    <div class="nav-wrap">
-      <a class="brand" href="#" data-page="home" aria-label="HGC Informativo (Home)">
-        <h1>HGC Informativo</h1>
-      </a>
-
-      <nav aria-label="Secciones del sitio">
-        <button class="nav-link active" data-page="home" type="button">Home</button>
-        <button class="nav-link" data-page="informativo" type="button">Informativo</button>
-        <button class="nav-link" data-page="politicas" type="button">Políticas</button>
-      </nav>
-
-      <div class="toggles">
-        <button id="modeBtn" class="btn" type="button" aria-pressed="false" aria-label="Cambiar tema claro/oscuro">🌙</button>
-      </div>
-    </div>
+    <h1>HGC Informativo</h1>
+    <nav>
+      <a href="#" onclick="showPage('home')">Home</a>
+      <a href="#" onclick="showPage('info')">Informativo</a>
+      <a href="#" onclick="showPage('policies')">Políticas</a>
+    </nav>
+    <button class="toggle-mode" onclick="toggleMode()">🌙</button>
   </header>
 
-  <main class="container" id="app">
-    <!-- ===================== HOME ===================== -->
-    <section id="page-home" class="page active" aria-labelledby="home-title">
-      <div class="bubble">
-        <h2 id="home-title" class="section-title">Bienvenido</h2>
-        <p class="lead">Explora nuestras secciones: Home, Informativo y Políticas. Tema blanco y azul con animaciones suaves, diseño responsive y modo claro/oscuro con azules adaptados.</p>
-      </div>
-      <div class="bubble">
-        <h2 class="section-title">Atajos</h2>
-        <p><strong>Consejo:</strong> toca en <em>Informativo</em> para ver la descripción de HGC exactamente como nos la diste, y en <em>Políticas</em> para ver todas las políticas y avisos legales sin modificar.</p>
+  <div class="container">
+    <!-- Home -->
+    <section id="home" class="page active">
+      <div class="card">
+        <h2>Bienvenido a HGC</h2>
+        <p>Explora nuestras secciones: Home, Informativo y Políticas. Tema blanco y azul con animaciones suaves, diseño responsive y modo claro/oscuro con azules adaptados.</p>
       </div>
     </section>
 
-    <!-- ===================== INFORMATIVO ===================== -->
-    <section id="page-informativo" class="page" aria-labelledby="info-title">
-      <div class="bubble">
-        <h2 id="info-title" class="section-title">Página Informativa – HGC</h2>
-        <div>
-          <!-- Texto EXACTO provisto -->
-          <p>¿Quiénes Somos?HGC es una oficina de servicios administrativos que trabaja con transparencia, responsabilidad y apego a la ley. No somos abogados ni brindamos asesoría legal, pero apoyamos a nuestros clientes en la gestión documental y en trámites administrativos de manera clara y segura.</p>
-          <p>Aviso Legal “I AM NOT AN ATTORNEY LICENSED TO PRACTICE LAW. I MAY NOT GIVE LEGAL ADVICE OR ACCEPT FEES FOR LEGAL ADVICE. I AM NOT ACCREDITED TO REPRESENT YOU IN IMMIGRATION MATTERS.”</p>
-        </div>
+    <!-- Informativo -->
+    <section id="info" class="page">
+      <div class="card">
+        <h2>¿Quiénes Somos?</h2>
+        <p>HGC es una oficina de servicios administrativos que trabaja con transparencia, responsabilidad y apego a la ley. No somos abogados ni brindamos asesoría legal, pero apoyamos a nuestros clientes en la gestión documental y en trámites administrativos de manera clara y segura.</p>
+      </div>
+
+      <div class="card">
+        <h2>Aviso Legal</h2>
+        <p>"I AM NOT AN ATTORNEY LICENSED TO PRACTICE LAW. I MAY NOT GIVE LEGAL ADVICE OR ACCEPT FEES FOR LEGAL ADVICE. I AM NOT ACCREDITED TO REPRESENT YOU IN IMMIGRATION MATTERS."</p>
       </div>
     </section>
 
-    <!-- ===================== POLÍTICAS ===================== -->
-    <section id="page-politicas" class="page" aria-labelledby="pol-title">
-      <div class="bubble">
-        <h2 id="pol-title" class="section-title">Políticas y Avisos</h2>
-        <div style="white-space: pre-wrap; line-height: 1.6;">
-📌 Office Policies – HGC
-1. Transparency and Legality
-- HGC always acts in accordance with the laws of the State of Florida, including Chapter 117 Florida Statutes – Notaries Public. - Legal advice or immigration representation is not provided, as established by law. - All services are carried out transparently, with written records and clear receipts of the processes performed.
-2. Delivery and Custody of Documents
-- All documents received will be delivered only to their rightful owner. - The office does not retain immigration or personal documents once they have been processed. - Upon request, clients may receive copies of the delivered documents for their records. - An administrative control file may be maintained only for administrative purposes and does not constitute undue retention.
-3. Client Communication
-- All clients must maintain active communication via email during ongoing processes. - Physical documents will only be sent through certified courier services (UPS or equivalent). - The client is responsible for covering shipping and handling costs. - The office is not responsible for delays caused by third parties (postal or courier services).
-4. Customer Service and Non-Discrimination
-- This office maintains respectful, dignified, and professional treatment of all clients. - Discrimination is not permitted based on race, color, religion, sex, sexual orientation, nationality, age, disability, or immigration status.
-5. Fees and Charges
-- Notary fees will be charged in accordance with Florida State law. - Any additional services will be disclosed to the client before being provided. - A receipt will be issued for all services performed.
-6. Security and Confidentiality
-- All information and documents received are handled under strict confidentiality. - This office is equipped with security cameras for the protection of clients and staff. - Threats, intimidation, or acts of violence will not be tolerated.
-7. Protection Against Threats
-- The office is protected under: - Florida Statutes § 836.05 – Extortion/Threats
+    <!-- Políticas -->
+    <section id="policies" class="page">
+      <div class="card">
+        <h2>📌 Office Policies – HGC</h2>
+        <p>1. Transparency and Legality - HGC always acts in accordance with the laws of the State of Florida, including Chapter 117 Florida Statutes – Notaries Public. - Legal advice or immigration representation is not provided, as established by law. - All services are carried out transparently, with written records and clear receipts of the processes performed.</p>
+        <p>2. Delivery and Custody of Documents - All documents received will be delivered only to their rightful owner. - The office does not retain immigration or personal documents once they have been processed. - Upon request, clients may receive copies of the delivered documents for their records. - An administrative control file may be maintained only for administrative purposes and does not constitute undue retention.</p>
+        <p>3. Client Communication - All clients must maintain active communication via email during ongoing processes. - Physical documents will only be sent through certified courier services (UPS or equivalent). - The client is responsible for covering shipping and handling costs. - The office is not responsible for delays caused by third parties (postal or courier services).</p>
+        <p>4. Customer Service and Non-Discrimination - This office maintains respectful, dignified, and professional treatment of all clients. - Discrimination is not permitted based on race, color, religion, sex, sexual orientation, nationality, age, disability, or immigration status.</p>
+        <p>5. Fees and Charges - Notary fees will be charged in accordance with Florida State law. - Any additional services will be disclosed to the client before being provided. - A receipt will be issued for all services performed.</p>
+        <p>6. Security and Confidentiality - All information and documents received are handled under strict confidentiality. - This office is equipped with security cameras for the protection of clients and staff. - Threats, intimidation, or acts of violence will not be tolerated.</p>
+        <p>7. Protection Against Threats - The office is protected under: - Florida Statutes § 836.05 – Extortion/Threats</p>
+      </div>
 
-📌 Legal Notice for Office Display
-📌 Important
-I AM NOT AN ATTORNEY LICENSED TO PRACTICE LAW. I MAY NOT GIVE LEGAL ADVICE OR ACCEPT FEES FOR LEGAL ADVICE. I AM NOT ACCREDITED TO REPRESENT YOU IN IMMIGRATION MATTERS.
-📌 Legal Protection
-This office is protected under the following laws: - Florida Statutes Chapter 117 – Notaries Public (Regulation of notaries). - Florida Statutes § 836.05 – Extortion/Threats (Prohibits threats and extortion). - Florida Statutes § 784.048 – Stalking / Harassment (Covers harassment, stalking, and repeated threats, including electronic communications). - First Amendment & Due Process – U.S. Constitution (Protection against unfounded accusations and the right to due process). Any written threat, email, or message may be retained and used as legal evidence.
-📌 Document Policy
-- All documents received will be delivered only to their rightful owner. - This office does not retain immigration or personal documents once they have been notified to the client. - Clients may request a copy of delivered documents at any time.
-📌 Fees
-Notary services are charged in accordance with Florida State law. (Fee schedule available upon request).
-📌 Equal Opportunity Commitment
-This office does not discriminate on the basis of: race, color, religion, sex, national origin, age, disability, or immigration status.
-📌 Security
-This office is under video surveillance for the protection of clients and staff.
-        </div>
+      <div class="card">
+        <h2>📌 Legal Notice for Office Display</h2>
+        <p>📌 Important I AM NOT AN ATTORNEY LICENSED TO PRACTICE LAW. I MAY NOT GIVE LEGAL ADVICE OR ACCEPT FEES FOR LEGAL ADVICE. I AM NOT ACCREDITED TO REPRESENT YOU IN IMMIGRATION MATTERS.</p>
+        <p>📌 Legal Protection This office is protected under the following laws: - Florida Statutes Chapter 117 – Notaries Public (Regulation of notaries). - Florida Statutes § 836.05 – Extortion/Threats (Prohibits threats and extortion). - Florida Statutes § 784.048 – Stalking / Harassment (Covers harassment, stalking, and repeated threats, including electronic communications). - First Amendment & Due Process – U.S. Constitution (Protection against unfounded accusations and the right to due process). Any written threat, email, or message may be retained and used as legal evidence.</p>
+        <p>📌 Document Policy - All documents received will be delivered only to their rightful owner. - This office does not retain immigration or personal documents once they have been notified to the client. - Clients may request a copy of delivered documents at any time.</p>
+        <p>📌 Fees Notary services are charged in accordance with Florida State law. (Fee schedule available upon request).</p>
+        <p>📌 Equal Opportunity Commitment This office does not discriminate on the basis of: race, color, religion, sex, national origin, age, disability, or immigration status.</p>
+        <p>📌 Security This office is under video surveillance for the protection of clients and staff.</p>
       </div>
     </section>
-  </main>
+  </div>
 
   <footer>
-    <div class="foot-wrap">
-      <h2 class="section-title" style="margin-top:0">Contáctenos</h2>
-      <div class="bubble" style="margin-top:10px;">
-        <div class="contact-grid">
-          <div>📱 Instagram: <a href="https://instagram.com/serviceshilda" target="_blank" rel="noopener">@serviceshilda</a></div>
-          <div>📞 Teléfono: <a href="tel:17868731859">7868731859</a></div>
-          <div>📧 Correo electrónico: <a href="mailto:serviceshilda@gmail.com">serviceshilda@gmail.com</a></div>
-          <div>📍 Dirección: 1651 w 37 th st unidad 410 hialeah fl 33012</div>
-        </div>
-      </div>
-    </div>
+    <p>📱 Instagram: <a href="https://instagram.com/serviceshilda">@serviceshilda</a></p>
+    <p>📞 Teléfono: 7868731859</p>
+    <p>📧 Correo: serviceshilda@gmail.com</p>
+    <p>📍 Dirección: 1651 w 37th st unidad 410, Hialeah FL 33012</p>
   </footer>
 
   <script>
-    // =====================
-    // NAV: transiciones entre páginas
-    // =====================
-    const links = document.querySelectorAll('.nav-link');
-    const pages = {
-      home: document.getElementById('page-home'),
-      informativo: document.getElementById('page-informativo'),
-      politicas: document.getElementById('page-politicas')
-    };
-
-    let current = pages.home;
-
-    function switchTo(id) {
-      const next = pages[id];
-      if (!next || next === current) return;
-
-      // actualizar botón activo
-      links.forEach(b => b.classList.toggle('active', b.dataset.page === id));
-
-      // animación de salida / entrada
-      current.classList.remove('active');
-      current.classList.add('leaving');
-      next.classList.add('active');
-
-      // cuando termina la salida, limpia clase
-      current.addEventListener('animationend', function handler() {
-        current.classList.remove('leaving');
-        current.removeEventListener('animationend', handler);
-      });
-
-      current = next;
-      // scroll suave al inicio en móvil
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    function showPage(pageId) {
+      const pages = document.querySelectorAll(".page");
+      pages.forEach(p => p.classList.remove("active"));
+      document.getElementById(pageId).classList.add("active");
     }
 
-    links.forEach(btn => {
-      btn.addEventListener('click', () => switchTo(btn.dataset.page));
-    });
-
-    // =====================
-    // DARK / LIGHT MODE con persistencia
-    // =====================
-    const modeBtn = document.getElementById('modeBtn');
-    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const stored = localStorage.getItem('hgc-theme');
-
-    function applyTheme(theme) {
-      const dark = theme === 'dark';
-      document.body.classList.toggle('dark', dark);
-      modeBtn.textContent = dark ? '☀️' : '🌙';
-      modeBtn.setAttribute('aria-pressed', String(dark));
+    function toggleMode() {
+      document.body.classList.toggle("dark");
     }
-
-    applyTheme(stored || (prefersDark ? 'dark' : 'light'));
-
-    modeBtn.addEventListener('click', () => {
-      const dark = !document.body.classList.contains('dark');
-      applyTheme(dark ? 'dark' : 'light');
-      localStorage.setItem('hgc-theme', dark ? 'dark' : 'light');
-    });
-  </script>
-</body>
-</html><!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>HGC Informativo</title>
-  
-  <!-- Fuentes elegantes y legibles -->
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Plus+Jakarta+Sans:wght@400;600;800&family=Playfair+Display:wght@600;800&display=swap" rel="stylesheet">
-
-  <style>
-    /* =====================
-       THEME & TOKENS
-    ====================== */
-    :root {
-      /* Light mode (azul clarito + blanco) */
-      --bg: #f4f8ff;                 /* fondo muy claro azulado */
-      --bg-soft: #ffffff;            /* tarjetas */
-      --text: #0b1020;               /* texto negro/near-black */
-      --muted: #334155;              /* subtítulos */
-
-      --blue-1: #dbeafe;             /* bordes suaves */
-      --blue-2: #93c5fd;             /* detalles */
-      --blue-3: #3b82f6;             /* primario (light) */
-      --blue-4: #1e40af;             /* acento más fuerte */
-
-      --card-shadow: 0 10px 30px rgba(30, 64, 175, 0.18);
-      --ring: 0 0 0 3px rgba(59, 130, 246, 0.25);
-
-      /* Gradientes de fondo (tema planeta, solo azules) */
-      --space-grad-1: radial-gradient(1200px 800px at 10% -10%, rgba(59,130,246,0.20), transparent 60%);
-      --space-grad-2: radial-gradient(900px 600px at 100% 0%, rgba(30,64,175,0.22), transparent 60%);
-      --space-grad-3: radial-gradient(1100px 900px at 40% 120%, rgba(147,197,253,0.18), transparent 60%);
-
-      --glass: rgba(255,255,255,0.75);
-      --border-fade-1: #e0ecff;
-      --border-fade-2: #b6d3ff;
-    }
-
-    body.dark {
-      /* Dark mode (azules más oscuros) */
-      --bg: #050a14;                 /* base muy oscura */
-      --bg-soft: #0a162b;            /* tarjetas */
-      --text: #ffffff;               /* texto claro */
-      --muted: #b9c2d3;              /* subtítulos */
-
-      --blue-1: #12254a;             /* bordes */
-      --blue-2: #204d99;             /* detalles */
-      --blue-3: #2a75ff;             /* primario (dark) */
-      --blue-4: #0b3b8e;             /* acento fuerte */
-
-      --card-shadow: 0 12px 35px rgba(0, 17, 51, 0.55);
-      --ring: 0 0 0 3px rgba(42, 117, 255, 0.35);
-
-      --space-grad-1: radial-gradient(1200px 800px at 10% -10%, rgba(42,117,255,0.20), transparent 60%);
-      --space-grad-2: radial-gradient(900px 600px at 100% 0%, rgba(11,59,142,0.28), transparent 60%);
-      --space-grad-3: radial-gradient(1200px 900px at 40% 120%, rgba(17,43,102,0.35), transparent 60%);
-
-      --glass: rgba(10, 22, 43, 0.82);
-      --border-fade-1: #0e274b;
-      --border-fade-2: #113b7a;
-    }
-
-    /* =====================
-       BASE
-    ====================== */
-    * { box-sizing: border-box; }
-    html, body { height: 100%; }
-
-    body {
-      margin: 0;
-      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      transition: background 400ms ease, color 400ms ease;
-      overflow-x: hidden;
-    }
-
-    /* Fondo temático (planeta/espacio solo azules) */
-    .space-bg {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background: var(--space-grad-1), var(--space-grad-2), var(--space-grad-3);
-      filter: saturate(120%);
-      z-index: 0;
-    }
-
-    /* Pequeñas "estrellas" azules animadas */
-    .stars { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
-    .stars::before, .stars::after {
-      content: "";
-      position: absolute; inset: -20% -20% -20% -20%;
-      background-image:
-        radial-gradient(2px 2px at 20% 30%, rgba(147,197,253,0.8) 50%, transparent 52%),
-        radial-gradient(2px 2px at 70% 60%, rgba(59,130,246,0.8) 50%, transparent 52%),
-        radial-gradient(2px 2px at 40% 80%, rgba(147,197,253,0.7) 50%, transparent 52%),
-        radial-gradient(2px 2px at 85% 25%, rgba(59,130,246,0.7) 50%, transparent 52%);
-      animation: drift 40s linear infinite;
-      opacity: 0.25;
-    }
-    .stars::after { animation-duration: 55s; opacity: 0.3; }
-    @keyframes drift { from { transform: translateY(0); } to { transform: translateY(-6%); } }
-
-    /* =====================
-       HEADER & NAV
-    ====================== */
-    header {
-      position: sticky; top: 0; z-index: 50;
-      background: linear-gradient(90deg, rgba(219,234,254,0.65), rgba(147,197,253,0.65));
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--blue-1);
-    }
-    body.dark header { background: linear-gradient(90deg, rgba(14,39,75,0.6), rgba(17,59,122,0.6)); }
-
-    .nav-wrap {
-      max-width: 1100px; margin: 0 auto; padding: 14px 18px;
-      display: flex; align-items: center; gap: 12px; justify-content: space-between;
-    }
-
-    .brand {
-      display: flex; align-items: center; gap: 10px; text-decoration: none;
-      color: var(--text);
-    }
-    .brand h1 {
-      font-family: 'Orbitron', sans-serif; letter-spacing: 1.5px; margin: 0; font-size: 1.35rem;
-    }
-
-    nav {
-      display: flex; gap: 10px; align-items: center;
-      background: linear-gradient(180deg, rgba(255,255,255,0.45), rgba(255,255,255,0.15));
-      border: 1px solid var(--blue-1);
-      padding: 6px; border-radius: 14px; box-shadow: var(--card-shadow);
-    }
-    body.dark nav { background: linear-gradient(180deg, rgba(10,22,43,0.55), rgba(10,22,43,0.2)); }
-
-    .nav-link {
-      appearance: none; border: 0; background: transparent; cursor: pointer; position: relative;
-      padding: 10px 14px; border-radius: 10px; font-weight: 700; color: var(--text);
-      transition: transform .2s ease;
-    }
-    .nav-link::after {
-      content: ""; position: absolute; inset: 0; border-radius: 10px;
-      background: radial-gradient(60% 100% at 50% 0%, rgba(59,130,246,0.18), transparent 70%);
-      opacity: 0; transition: opacity .25s ease;
-    }
-    .nav-link:hover { transform: translateY(-1px); }
-    .nav-link:hover::after { opacity: 1; }
-    .nav-link.active { color: #fff; background: linear-gradient(180deg, var(--blue-3), var(--blue-4)); box-shadow: 0 6px 18px rgba(30,64,175,0.35); }
-
-    .toggles { display: flex; gap: 8px; align-items: center; }
-    .btn {
-      appearance: none; border: 1px solid var(--blue-1); background: var(--bg-soft); color: var(--text);
-      padding: 8px 12px; border-radius: 10px; font-weight: 700; cursor: pointer; box-shadow: var(--card-shadow);
-      transition: transform .15s ease, box-shadow .2s ease, background .3s ease;
-    }
-    .btn:active { transform: translateY(1px) scale(0.99); }
-    .btn:focus-visible { outline: none; box-shadow: var(--ring); }
-
-    /* =====================
-       LAYOUT
-    ====================== */
-    .container { max-width: 1100px; margin: 0 auto; padding: 28px 18px 60px; position: relative; z-index: 1; }
-
-    /* Tarjetas-burbuja 3D (glass + borde degradado + sombra) */
-    .bubble {
-      position: relative; overflow: hidden; border-radius: 20px; padding: 24px; margin: 16px 0;
-      background: var(--glass);
-      border: 1px solid var(--border-fade-1);
-      box-shadow: var(--card-shadow);
-    }
-    .bubble::before { /* borde degradado suave */
-      content: ""; position: absolute; inset: -1px; border-radius: 22px; padding: 1px;
-      background: linear-gradient(135deg, var(--border-fade-1), var(--border-fade-2));
-      -webkit-mask: 
-        linear-gradient(#000 0 0) content-box, 
-        linear-gradient(#000 0 0);
-      -webkit-mask-composite: xor; mask-composite: exclude;
-      pointer-events: none;
-    }
-    .bubble::after { /* brillo 3D */
-      content: ""; position: absolute; top: -20%; left: -10%; width: 60%; height: 60%;
-      background: radial-gradient(closest-side, rgba(147,197,253,0.35), transparent 70%);
-      transform: rotate(8deg);
-      pointer-events: none;
-    }
-
-    h2.section-title { 
-      font-family: 'Playfair Display', serif; font-weight: 800; margin: 6px 0 14px; 
-      color: var(--blue-4); letter-spacing: 0.3px; text-shadow: 0 1px 0 rgba(255,255,255,0.2);
-    }
-    body.dark h2.section-title { color: #b7ccff; text-shadow: 0 1px 0 rgba(0,0,0,0.3); }
-
-    .lead { color: var(--muted); font-weight: 600; }
-
-    /* =====================
-       PAGES + TRANSITIONS
-    ====================== */
-    .page { display: none; opacity: 0; transform: translateY(8px) scale(0.995); }
-    .page.active { display: block; animation: enter .45s cubic-bezier(.22,.8,.36,1) forwards; }
-    .page.leaving { animation: leave .35s ease forwards; }
-
-    @keyframes enter { from { opacity: 0; transform: translateY(8px) scale(0.995); } to { opacity: 1; transform: translateY(0) scale(1); } }
-    @keyframes leave { from { opacity: 1; transform: translateY(0) scale(1); } to { opacity: 0; transform: translateY(4px) scale(0.997); } }
-
-    /* =====================
-       FOOTER
-    ====================== */
-    footer {
-      border-top: 1px solid var(--blue-1);
-      background: linear-gradient(180deg, rgba(255,255,255,0.55), rgba(255,255,255,0.25));
-      padding: 28px 18px; position: relative; z-index: 1;
-    }
-    body.dark footer { background: linear-gradient(180deg, rgba(10,22,43,0.55), rgba(10,22,43,0.25)); }
-    .foot-wrap { max-width: 1100px; margin: 0 auto; color: var(--text); }
-    .contact-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
-    .contact-grid a { color: inherit; text-decoration: none; font-weight: 700; }
-    .contact-grid a:hover { text-decoration: underline; }
-
-    /* =====================
-       RESPONSIVE
-    ====================== */
-    @media (min-width: 720px) {
-      .contact-grid { grid-template-columns: repeat(2, 1fr); }
-    }
-    @media (min-width: 980px) {
-      .contact-grid { grid-template-columns: repeat(4, 1fr); }
-    }
-
-    /* Accesibilidad: respeta reducción de movimiento */
-    @media (prefers-reduced-motion: reduce) {
-      .page.active, .page.leaving { animation: none !important; opacity: 1; transform: none; }
-      .nav-link:hover { transform: none; }
-    }
-  </style>
-</head>
-<body>
-  <div class="space-bg" aria-hidden="true"></div>
-  <div class="stars" aria-hidden="true"></div>
-
-  <header>
-    <div class="nav-wrap">
-      <a class="brand" href="#" data-page="home" aria-label="HGC Informativo (Home)">
-        <h1>HGC Informativo</h1>
-      </a>
-
-      <nav aria-label="Secciones del sitio">
-        <button class="nav-link active" data-page="home" type="button">Home</button>
-        <button class="nav-link" data-page="informativo" type="button">Informativo</button>
-        <button class="nav-link" data-page="politicas" type="button">Políticas</button>
-      </nav>
-
-      <div class="toggles">
-        <button id="modeBtn" class="btn" type="button" aria-pressed="false" aria-label="Cambiar tema claro/oscuro">🌙</button>
-      </div>
-    </div>
-  </header>
-
-  <main class="container" id="app">
-    <!-- ===================== HOME ===================== -->
-    <section id="page-home" class="page active" aria-labelledby="home-title">
-      <div class="bubble">
-        <h2 id="home-title" class="section-title">Bienvenido</h2>
-        <p class="lead">Explora nuestras secciones: Home, Informativo y Políticas. Tema blanco y azul con animaciones suaves, diseño responsive y modo claro/oscuro con azules adaptados.</p>
-      </div>
-      <div class="bubble">
-        <h2 class="section-title">Atajos</h2>
-        <p><strong>Consejo:</strong> toca en <em>Informativo</em> para ver la descripción de HGC exactamente como nos la diste, y en <em>Políticas</em> para ver todas las políticas y avisos legales sin modificar.</p>
-      </div>
-    </section>
-
-    <!-- ===================== INFORMATIVO ===================== -->
-    <section id="page-informativo" class="page" aria-labelledby="info-title">
-      <div class="bubble">
-        <h2 id="info-title" class="section-title">Página Informativa – HGC</h2>
-        <div>
-          <!-- Texto EXACTO provisto -->
-          <p>¿Quiénes Somos?HGC es una oficina de servicios administrativos que trabaja con transparencia, responsabilidad y apego a la ley. No somos abogados ni brindamos asesoría legal, pero apoyamos a nuestros clientes en la gestión documental y en trámites administrativos de manera clara y segura.</p>
-          <p>Aviso Legal “I AM NOT AN ATTORNEY LICENSED TO PRACTICE LAW. I MAY NOT GIVE LEGAL ADVICE OR ACCEPT FEES FOR LEGAL ADVICE. I AM NOT ACCREDITED TO REPRESENT YOU IN IMMIGRATION MATTERS.”</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===================== POLÍTICAS ===================== -->
-    <section id="page-politicas" class="page" aria-labelledby="pol-title">
-      <div class="bubble">
-        <h2 id="pol-title" class="section-title">Políticas y Avisos</h2>
-        <div style="white-space: pre-wrap; line-height: 1.6;">
-📌 Office Policies – HGC
-1. Transparency and Legality
-- HGC always acts in accordance with the laws of the State of Florida, including Chapter 117 Florida Statutes – Notaries Public. - Legal advice or immigration representation is not provided, as established by law. - All services are carried out transparently, with written records and clear receipts of the processes performed.
-2. Delivery and Custody of Documents
-- All documents received will be delivered only to their rightful owner. - The office does not retain immigration or personal documents once they have been processed. - Upon request, clients may receive copies of the delivered documents for their records. - An administrative control file may be maintained only for administrative purposes and does not constitute undue retention.
-3. Client Communication
-- All clients must maintain active communication via email during ongoing processes. - Physical documents will only be sent through certified courier services (UPS or equivalent). - The client is responsible for covering shipping and handling costs. - The office is not responsible for delays caused by third parties (postal or courier services).
-4. Customer Service and Non-Discrimination
-- This office maintains respectful, dignified, and professional treatment of all clients. - Discrimination is not permitted based on race, color, religion, sex, sexual orientation, nationality, age, disability, or immigration status.
-5. Fees and Charges
-- Notary fees will be charged in accordance with Florida State law. - Any additional services will be disclosed to the client before being provided. - A receipt will be issued for all services performed.
-6. Security and Confidentiality
-- All information and documents received are handled under strict confidentiality. - This office is equipped with security cameras for the protection of clients and staff. - Threats, intimidation, or acts of violence will not be tolerated.
-7. Protection Against Threats
-- The office is protected under: - Florida Statutes § 836.05 – Extortion/Threats
-
-📌 Legal Notice for Office Display
-📌 Important
-I AM NOT AN ATTORNEY LICENSED TO PRACTICE LAW. I MAY NOT GIVE LEGAL ADVICE OR ACCEPT FEES FOR LEGAL ADVICE. I AM NOT ACCREDITED TO REPRESENT YOU IN IMMIGRATION MATTERS.
-📌 Legal Protection
-This office is protected under the following laws: - Florida Statutes Chapter 117 – Notaries Public (Regulation of notaries). - Florida Statutes § 836.05 – Extortion/Threats (Prohibits threats and extortion). - Florida Statutes § 784.048 – Stalking / Harassment (Covers harassment, stalking, and repeated threats, including electronic communications). - First Amendment & Due Process – U.S. Constitution (Protection against unfounded accusations and the right to due process). Any written threat, email, or message may be retained and used as legal evidence.
-📌 Document Policy
-- All documents received will be delivered only to their rightful owner. - This office does not retain immigration or personal documents once they have been notified to the client. - Clients may request a copy of delivered documents at any time.
-📌 Fees
-Notary services are charged in accordance with Florida State law. (Fee schedule available upon request).
-📌 Equal Opportunity Commitment
-This office does not discriminate on the basis of: race, color, religion, sex, national origin, age, disability, or immigration status.
-📌 Security
-This office is under video surveillance for the protection of clients and staff.
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <div class="foot-wrap">
-      <h2 class="section-title" style="margin-top:0">Contáctenos</h2>
-      <div class="bubble" style="margin-top:10px;">
-        <div class="contact-grid">
-          <div>📱 Instagram: <a href="https://instagram.com/serviceshilda" target="_blank" rel="noopener">@serviceshilda</a></div>
-          <div>📞 Teléfono: <a href="tel:17868731859">7868731859</a></div>
-          <div>📧 Correo electrónico: <a href="mailto:serviceshilda@gmail.com">serviceshilda@gmail.com</a></div>
-          <div>📍 Dirección: 1651 w 37 th st unidad 410 hialeah fl 33012</div>
-        </div>
-      </div>
-    </div>
-  </footer>
-
-  <script>
-    // =====================
-    // NAV: transiciones entre páginas
-    // =====================
-    const links = document.querySelectorAll('.nav-link');
-    const pages = {
-      home: document.getElementById('page-home'),
-      informativo: document.getElementById('page-informativo'),
-      politicas: document.getElementById('page-politicas')
-    };
-
-    let current = pages.home;
-
-    function switchTo(id) {
-      const next = pages[id];
-      if (!next || next === current) return;
-
-      // actualizar botón activo
-      links.forEach(b => b.classList.toggle('active', b.dataset.page === id));
-
-      // animación de salida / entrada
-      current.classList.remove('active');
-      current.classList.add('leaving');
-      next.classList.add('active');
-
-      // cuando termina la salida, limpia clase
-      current.addEventListener('animationend', function handler() {
-        current.classList.remove('leaving');
-        current.removeEventListener('animationend', handler);
-      });
-
-      current = next;
-      // scroll suave al inicio en móvil
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    links.forEach(btn => {
-      btn.addEventListener('click', () => switchTo(btn.dataset.page));
-    });
-
-    // =====================
-    // DARK / LIGHT MODE con persistencia
-    // =====================
-    const modeBtn = document.getElementById('modeBtn');
-    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const stored = localStorage.getItem('hgc-theme');
-
-    function applyTheme(theme) {
-      const dark = theme === 'dark';
-      document.body.classList.toggle('dark', dark);
-      modeBtn.textContent = dark ? '☀️' : '🌙';
-      modeBtn.setAttribute('aria-pressed', String(dark));
-    }
-
-    applyTheme(stored || (prefersDark ? 'dark' : 'light'));
-
-    modeBtn.addEventListener('click', () => {
-      const dark = !document.body.classList.contains('dark');
-      applyTheme(dark ? 'dark' : 'light');
-      localStorage.setItem('hgc-theme', dark ? 'dark' : 'light');
-    });
   </script>
 </body>
 </html>
