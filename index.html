@@ -8,23 +8,23 @@
   <style>
     :root {
       --blue-light: #4da6ff;
-      --blue-dark: #0059b3;
+      --blue-dark: #003366;
       --bg-light: #f5f9ff;
-      --bg-dark: #0d1117;
+      --bg-dark: #0a0f1f;
       --text-light: #0d1117;
       --text-dark: #e6f0ff;
     }
 
-    [data-theme="light"] {
+    body[data-theme="light"] {
       --bg-color: var(--bg-light);
       --text-color: var(--text-light);
       --accent: var(--blue-light);
     }
 
-    [data-theme="dark"] {
+    body[data-theme="dark"] {
       --bg-color: var(--bg-dark);
       --text-color: var(--text-dark);
-      --accent: var(--blue-dark);
+      --accent: var(--blue-light);
     }
 
     body {
@@ -44,33 +44,39 @@
       font-family: 'Orbitron', sans-serif;
     }
 
+    h1 {
+      margin: 0;
+      font-size: 1.6rem;
+    }
+
+    nav {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
     nav button {
       background: var(--accent);
       border: none;
       color: white;
-      padding: 0.5rem 1rem;
-      margin: 0 0.3rem;
-      border-radius: 12px;
+      padding: 0.8rem 1.4rem;
+      margin: 0.3rem;
+      border-radius: 14px;
       cursor: pointer;
-      transition: transform 0.2s;
+      transition: all 0.3s ease;
       font-weight: bold;
+      font-size: 1rem;
+      box-shadow: 0 0 12px rgba(77,166,255,0.6);
     }
 
     nav button:hover {
-      transform: scale(1.05);
-    }
-
-    .lang-switch button {
-      font-size: 1.2rem;
-      background: none;
-      border: none;
-      cursor: pointer;
-      margin-left: 0.5rem;
+      transform: scale(1.08);
+      box-shadow: 0 0 18px rgba(77,166,255,1);
     }
 
     .section {
       display: none;
-      padding: 2rem;
+      padding: 2rem 1rem;
       animation: fadeIn 0.6s ease-in-out;
     }
 
@@ -83,13 +89,13 @@
       padding: 1.5rem;
       border-radius: 20px;
       margin: 1rem auto;
-      max-width: 1000px;
+      max-width: 1100px;
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
       border: 1px solid var(--accent);
-      backdrop-filter: blur(6px);
+      backdrop-filter: blur(10px);
     }
 
-    .card p {
+    .card p, .card li {
       text-align: justify;
       line-height: 1.8;
       margin-bottom: 1rem;
@@ -100,76 +106,181 @@
       color: var(--accent);
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
+    h3 {
+      color: var(--accent);
+      margin-top: 1.5rem;
     }
 
     footer {
       text-align: center;
       padding: 1.5rem;
       background: linear-gradient(90deg, transparent, var(--accent));
+      font-size: 0.95rem;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      nav { flex-direction: column; align-items: flex-start; }
+      nav button { width: 100%; text-align: center; }
     }
   </style>
 </head>
-<body data-theme="light" data-lang="es">
+<body data-theme="light">
   <header>
     <h1>HGC Informativo</h1>
-    <div style="display:flex; align-items:center;">
-      <nav>
-        <button onclick="showSection('home')">Home</button>
-        <button onclick="showSection('informativo')">Informativo</button>
-        <button onclick="showSection('politicas')">Políticas</button>
-      </nav>
-      <div class="lang-switch">
-        <button onclick="setLang('es')">🇪🇸</button>
-        <button onclick="setLang('en')">🇺🇸</button>
-      </div>
-      <button id="theme-btn" onclick="toggleTheme()" style="margin-left:1rem;">🌙</button>
-    </div>
+    <nav>
+      <button onclick="showSection('home')">🏠 Inicio</button>
+      <button onclick="showSection('informativo')">ℹ️ Informativo</button>
+      <button onclick="showSection('politicas')">📜 Políticas</button>
+    </nav>
+    <button id="theme-btn" onclick="toggleTheme()" style="margin-left:1rem;">🌙</button>
   </header>
 
   <main>
+    <!-- Home -->
     <section id="home" class="section active">
       <div class="card">
-        <h2 data-es="Bienvenido" data-en="Welcome">Bienvenido</h2>
-        <p data-es="Explora nuestras secciones: Home, Informativo y Políticas. Tema blanco y azul con animaciones suaves, diseño responsive y modo claro/oscuro con azules adaptados." 
-           data-en="Explore our sections: Home, Informative and Policies. White and blue theme with smooth animations, responsive design and light/dark mode with adapted blues.">
-           Explora nuestras secciones: Home, Informativo y Políticas. Tema blanco y azul con animaciones suaves, diseño responsive y modo claro/oscuro con azules adaptados.
-        </p>
-      </div>
-      <div class="card">
-        <h2 data-es="Atajos" data-en="Shortcuts">Atajos</h2>
-        <p data-es="Consejo: toca en Informativo para ver la descripción de HGC exactamente como nos la diste, y en Políticas para ver todas las políticas y avisos legales sin modificar." 
-           data-en="Tip: Tap on Informative to see the exact HGC description as you gave it to us, and on Policies to see all policies and legal notices without modification.">
-           Consejo: toca en Informativo para ver la descripción de HGC exactamente como nos la diste, y en Políticas para ver todas las políticas y avisos legales sin modificar.
+        <h2>Bienvenido</h2>
+        <p>
+          Explora nuestras secciones para conocer más sobre HGC: Quiénes somos, nuestro Aviso Legal y nuestras Políticas.  
+          Diseñado con estilo futurista, adaptado para computadoras y teléfonos móviles.
         </p>
       </div>
     </section>
 
+    <!-- Informativo -->
     <section id="informativo" class="section">
       <div class="card">
-        <h2 data-es="📌 Políticas de Oficina – HGC" data-en="📌 Office Policies – HGC">📌 Políticas de Oficina – HGC</h2>
-        <p data-es="1. Transparencia y Legalidad..." data-en="1. Transparency and Legality...">
-          <!-- TODO: Aquí va todo el bloque completo en español e inglés como data-es y data-en -->
+        <h2>¿Quiénes Somos?</h2>
+        <p>
+          HGC es una oficina de servicios administrativos que trabaja con transparencia, responsabilidad y apego a la ley.  
+          No somos abogados ni brindamos asesoría legal, pero apoyamos a nuestros clientes en la gestión documental y en trámites administrativos de manera clara y segura.
         </p>
+
+        <h2>Aviso Legal</h2>
+        <blockquote>
+          “NO SOY ABOGADA NI ESTOY AUTORIZADA A EJERCER LA ABOGACÍA.  
+          NO PUEDO DAR ASESORÍA LEGAL NI ACEPTAR HONORARIOS POR ASESORÍA LEGAL.  
+          NO ESTOY ACREDITADA PARA REPRESENTARLO EN ASUNTOS DE INMIGRACIÓN.”
+        </blockquote>
       </div>
     </section>
 
+    <!-- Políticas -->
     <section id="politicas" class="section">
       <div class="card">
-        <h2 data-es="📌 Aviso Legal para Mostrar en la Oficina" data-en="📌 Legal Notice for Office Display">📌 Aviso Legal para Mostrar en la Oficina</h2>
-        <p data-es="📌 Importante..." data-en="📌 Important...">
-          <!-- TODO: Aquí va todo el bloque completo en español e inglés como data-es y data-en -->
+        <h2>📌 Políticas de Oficina – HGC</h2>
+
+        <h3>1. Transparencia y Legalidad</h3>
+        <ul>
+          <li>HGC siempre actúa de acuerdo con las leyes del Estado de Florida, incluyendo el Capítulo 117 – Notaries Public.</li>
+          <li>No se brinda asesoría legal ni representación migratoria.</li>
+          <li>Todos los servicios se realizan con transparencia, con registros escritos y recibos claros de los procesos efectuados.</li>
+        </ul>
+
+        <h3>2. Entrega y Custodia de Documentos</h3>
+        <ul>
+          <li>Todos los documentos recibidos serán entregados únicamente a su legítimo propietario.</li>
+          <li>La oficina no retiene documentos migratorios ni personales una vez procesados.</li>
+          <li>A solicitud, los clientes podrán recibir copias de los documentos entregados.</li>
+          <li>Se podrá mantener un archivo administrativo solo para fines de control, lo cual no constituye retención indebida.</li>
+        </ul>
+
+        <h3>3. Comunicación con el Cliente</h3>
+        <ul>
+          <li>Todos los clientes deben mantener comunicación activa por correo electrónico durante los procesos en curso.</li>
+          <li>Los documentos físicos se enviarán únicamente por mensajería certificada (UPS o equivalente).</li>
+          <li>El cliente cubre los gastos de envío y manejo.</li>
+          <li>La oficina no es responsable de retrasos ocasionados por terceros.</li>
+        </ul>
+
+        <h3>4. Atención al Cliente y No Discriminación</h3>
+        <ul>
+          <li>La oficina mantiene un trato respetuoso, digno y profesional hacia todos los clientes.</li>
+          <li>No se permite discriminación por motivos de raza, color, religión, sexo, orientación sexual, nacionalidad, edad, discapacidad o estatus migratorio.</li>
+        </ul>
+
+        <h3>5. Honorarios</h3>
+        <ul>
+          <li>Los honorarios notariales se cobran conforme a la ley del Estado de Florida.</li>
+          <li>Cualquier servicio adicional será informado al cliente antes de su prestación.</li>
+          <li>Se emitirá comprobante por todos los servicios realizados.</li>
+        </ul>
+
+        <h3>6. Seguridad y Confidencialidad</h3>
+        <ul>
+          <li>Toda la información y documentos recibidos se manejan bajo estricta confidencialidad.</li>
+          <li>La oficina cuenta con cámaras de seguridad para protección de clientes y personal.</li>
+          <li>No se tolerarán amenazas, intimidaciones ni actos de violencia.</li>
+        </ul>
+
+        <h3>7. Protección contra Amenazas</h3>
+        <ul>
+          <li>La oficina se ampara en:
+            <ul>
+              <li>Florida Statutes § 836.05 – Extorsión/Amenazas</li>
+              <li>Florida Statutes § 784.048 – Acoso/Persecución</li>
+              <li>Primera Enmienda y Debido Proceso – Constitución de EE.UU.</li>
+            </ul>
+          </li>
+          <li>Cualquier amenaza escrita, correo o mensaje podrá ser retenido como evidencia legal.</li>
+        </ul>
+
+        <h3>8. Terminación de Servicios</h3>
+        <ul>
+          <li>Una vez completada la entrega de documentos y el servicio contratado, la colaboración entre la oficina y el cliente se considerará cerrada.</li>
+          <li>Cualquier reclamo deberá presentarse por escrito de manera formal y respetuosa.</li>
+        </ul>
+
+        <h2>📌 Aviso Legal para Mostrar en la Oficina</h2>
+        <p>
+          ⚖️ Importante <br>
+          NO SOY ABOGADA NI ESTOY AUTORIZADA A EJERCER LA ABOGACÍA. <br>
+          NO PUEDO DAR ASESORÍA LEGAL NI ACEPTAR HONORARIOS POR ASESORÍA LEGAL. <br>
+          NO ESTOY ACREDITADA PARA REPRESENTARLO EN ASUNTOS DE INMIGRACIÓN.
+        </p>
+        <p>
+          📜 Protección Legal <br>
+          Esta oficina se ampara en las siguientes leyes: <br>
+          - Florida Statutes Chapter 117 – Notaries Public <br>
+          - Florida Statutes § 836.05 – Extorsión/Amenazas <br>
+          - Florida Statutes § 784.048 – Acoso/Persecución <br>
+          - Primera Enmienda y Debido Proceso – Constitución de EE.UU. <br>
+          Cualquier amenaza escrita, correo o mensaje podrá ser retenido y usado como evidencia legal.
+        </p>
+        <p>
+          📂 Política de Documentos <br>
+          - Todos los documentos recibidos serán entregados únicamente a su dueño legítimo. <br>
+          - Esta oficina no retiene documentos migratorios ni personales una vez notificados al cliente. <br>
+          - El cliente puede solicitar copia de lo entregado en cualquier momento.
+        </p>
+        <p>
+          💲 Honorarios <br>
+          Los servicios notariales se cobran conforme a la ley del Estado de Florida. (La lista de tarifas está disponible a solicitud).
+        </p>
+        <p>
+          🤝 Compromiso de Igualdad <br>
+          Esta oficina no discrimina por motivos de raza, color, religión, sexo, origen nacional, edad, discapacidad o estatus migratorio.
+        </p>
+        <p>
+          🔒 Seguridad <br>
+          La oficina cuenta con videovigilancia para la protección de clientes y personal.
         </p>
       </div>
     </section>
   </main>
 
   <footer>
-    <p data-es="📱 Instagram: @serviceshilda | 📞 Teléfono: 7868731859 | 📧 Correo: serviceshilda@gmail.com | 📍 Dirección: 1631 W 37th St unidad 410 Hialeah FL 33012" 
-       data-en="📱 Instagram: @serviceshilda | 📞 Phone: 7868731859 | 📧 Email: serviceshilda@gmail.com | 📍 Address: 1631 W 37th St unit 410 Hialeah FL 33012">
-       📱 Instagram: @serviceshilda | 📞 Teléfono: 7868731859 | 📧 Correo: serviceshilda@gmail.com | 📍 Dirección: 1631 W 37th St unidad 410 Hialeah FL 33012
+    <p>
+      📷 Instagram: <a href="https://instagram.com/serviceshilda" target="_blank">@serviceshilda</a> |  
+      📞 Teléfono: <a href="tel:+17868731859">7868731859</a> |  
+      📧 Correo: <a href="mailto:serviceshilda@gmail.com">serviceshilda@gmail.com</a> |  
+      📍 Dirección: 1651 W 37th St, Unidad 410, Hialeah, FL 33012
     </p>
   </footer>
 
@@ -188,13 +299,6 @@
         body.dataset.theme = "dark";
         document.getElementById("theme-btn").innerText = "☀️";
       }
-    }
-
-    function setLang(lang) {
-      document.body.dataset.lang = lang;
-      document.querySelectorAll('[data-es]').forEach(el => {
-        el.innerText = el.getAttribute(`data-${lang}`);
-      });
     }
   </script>
 </body>
