@@ -1,180 +1,199 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>HGC Informativo</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Fuentes -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
   <style>
-    :root {
-      --blue-light: #4da6ff;
-      --blue-dark: #003366;
-      --bg-light: #f5f9ff;
-      --bg-dark: #0a0f1f;
-      --text-light: #0d1117;
-      --text-dark: #e6f0ff;
+    :root{
+      --accent-1: #4da6ff;
+      --accent-2: #0059b3;
+      --bg: #f5f9ff;
+      --glass: rgba(255,255,255,0.06);
+      --text-dark: #061125; /* letras casi negras */
+      --radius: 16px;
     }
 
-    body[data-theme="light"] {
-      --bg-color: var(--bg-light);
-      --text-color: var(--text-light);
-      --accent: var(--blue-light);
+    /* Dark theme variables */
+    body[data-theme="dark"]{
+      --bg: #060717;
+      --glass: rgba(255,255,255,0.03);
+      --text-dark: #eafbff;
     }
 
-    body[data-theme="dark"] {
-      --bg-color: var(--bg-dark);
-      --text-color: var(--text-dark);
-      --accent: var(--blue-light);
+    /* Página */
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Poppins,system-ui,Segoe UI,Arial; background:linear-gradient(135deg, rgba(77,166,255,0.06), rgba(0,89,179,0.02)), var(--bg); color:var(--text-dark); -webkit-font-smoothing:antialiased}
+    a{color:inherit;text-decoration:none}
+
+    /* Header */
+    header{
+      position:sticky;top:0;z-index:40;
+      display:flex;align-items:center;justify-content:space-between;
+      gap:1rem;padding:0.9rem 1rem;
+      background:linear-gradient(90deg, rgba(77,166,255,0.12), transparent);
+      backdrop-filter: blur(6px);
+      border-bottom: 1px solid rgba(77,166,255,0.06);
+    }
+    .brand{
+      display:flex;align-items:center;gap:0.75rem;
+    }
+    .brand img.logo{
+      width:56px;height:56px;border-radius:10px;object-fit:contain;
+      box-shadow: 0 8px 30px rgba(77,166,255,0.12);
+      cursor:pointer;
+    }
+    .brand h1{margin:0;font-family:Orbitron, sans-serif;font-size:1.1rem;letter-spacing:0.6px}
+
+    /* Nav botones grandes visibles */
+    nav {display:flex;gap:0.6rem;align-items:center;flex-wrap:wrap}
+    .nav-btn{
+      background: linear-gradient(90deg,var(--accent-1),var(--accent-2));
+      color:white;border:0;padding:0.75rem 1.1rem;border-radius:12px;
+      font-weight:700;font-size:0.98rem;cursor:pointer;box-shadow: 0 10px 30px rgba(0,89,179,0.14);
+      transition:transform .15s ease, box-shadow .15s ease;
+    }
+    .nav-btn:active{transform:translateY(1px)}
+    .nav-btn:hover{transform:translateY(-4px); box-shadow:0 18px 40px rgba(0,89,179,0.22)}
+
+    .controls{display:flex;gap:0.5rem;align-items:center}
+    .icon-btn{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:0.5rem;border-radius:10px;cursor:pointer}
+
+    /* Watermark (logo fade out) */
+    .watermark{
+      position:fixed;right:4vw;bottom:6vh;opacity:0.06;z-index:0;pointer-events:none;filter: blur(1px);
+    }
+    .watermark img{width:260px;height:auto;mix-blend-mode:overlay}
+
+    /* Main layout */
+    main{max-width:1100px;margin:2rem auto;padding:1rem;position:relative;z-index:5}
+    .section{display:none;margin-bottom:1.75rem;animation:fadeIn .6s ease both}
+    .section.active{display:block}
+
+    /* Tarjeta estilo glass futuristic */
+    .card{
+      background:var(--glass);
+      border-radius:var(--radius);padding:1.25rem;
+      border:1px solid rgba(255,255,255,0.06);
+      box-shadow: 0 10px 30px rgba(4,12,30,0.12);
+      backdrop-filter: blur(10px) saturate(120%);
+    }
+    h2{font-family:Orbitron, sans-serif;color:var(--accent-2);margin-top:0}
+    h3{color:var(--accent-1);margin-bottom:0.5rem}
+
+    p, li{color:var(--text-dark);line-height:1.7}
+    ul{padding-left:1.1rem}
+
+    /* Footer */
+    footer{margin-top:1.5rem;padding:1.3rem;text-align:center;border-top:1px solid rgba(77,166,255,0.04)}
+    footer a{color:var(--accent-2);font-weight:600}
+
+    /* Responsive y móviles */
+    @media(max-width:820px){
+      .brand h1{font-size:1rem}
+      .nav-btn{padding:0.65rem 0.9rem;font-size:0.95rem}
+      .watermark img{width:160px}
+    }
+    @media(max-width:520px){
+      header{gap:0.6rem;padding:0.75rem}
+      .brand img.logo{width:48px;height:48px}
+      nav{display:flex;flex-direction:column;gap:0.5rem;width:100%}
+      .nav-btn{width:100%}
+      main{padding:0.6rem}
     }
 
-    body {
-      margin: 0;
-      font-family: 'Roboto', sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      transition: background 0.3s, color 0.3s;
-    }
-
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 2rem;
-      background: linear-gradient(90deg, var(--accent), transparent);
-      font-family: 'Orbitron', sans-serif;
-    }
-
-    h1 {
-      margin: 0;
-      font-size: 1.6rem;
-    }
-
-    nav {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-
-    nav button {
-      background: var(--accent);
-      border: none;
-      color: white;
-      padding: 0.8rem 1.4rem;
-      margin: 0.3rem;
-      border-radius: 14px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-weight: bold;
-      font-size: 1rem;
-      box-shadow: 0 0 12px rgba(77,166,255,0.6);
-    }
-
-    nav button:hover {
-      transform: scale(1.08);
-      box-shadow: 0 0 18px rgba(77,166,255,1);
-    }
-
-    .section {
-      display: none;
-      padding: 2rem 1rem;
-      animation: fadeIn 0.6s ease-in-out;
-    }
-
-    .active {
-      display: block;
-    }
-
-    .card {
-      background: rgba(255, 255, 255, 0.05);
-      padding: 1.5rem;
-      border-radius: 20px;
-      margin: 1rem auto;
-      max-width: 1100px;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-      border: 1px solid var(--accent);
-      backdrop-filter: blur(10px);
-    }
-
-    .card p, .card li {
-      text-align: justify;
-      line-height: 1.8;
-      margin-bottom: 1rem;
-    }
-
-    h2 {
-      font-family: 'Orbitron', sans-serif;
-      color: var(--accent);
-    }
-
-    h3 {
-      color: var(--accent);
-      margin-top: 1.5rem;
-    }
-
-    footer {
-      text-align: center;
-      padding: 1.5rem;
-      background: linear-gradient(90deg, transparent, var(--accent));
-      font-size: 0.95rem;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      nav { flex-direction: column; align-items: flex-start; }
-      nav button { width: 100%; text-align: center; }
-    }
+    /* Animaciones */
+    @keyframes fadeIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
   </style>
 </head>
 <body data-theme="light">
+  <!-- Header con logo (clic vuelve al inicio) -->
   <header>
-    <h1>HGC Informativo</h1>
+    <div class="brand">
+      <!-- Reemplaza logo.png por tu archivo de logo (mismo nombre) -->
+      <a href="#home" onclick="showSection('home')"><img src="logo.png" alt="HGC Logo" class="logo"></a>
+      <h1>HGC Informativo</h1>
+    </div>
+
+    <!-- Navegación: botones grandes y visibles (pensados para móvil también) -->
     <nav>
-      <button onclick="showSection('home')">🏠 Inicio</button>
-      <button onclick="showSection('informativo')">ℹ️ Informativo</button>
-      <button onclick="showSection('politicas')">📜 Políticas</button>
+      <button class="nav-btn" onclick="showSection('home')">🏠 Inicio</button>
+      <button class="nav-btn" onclick="showSection('informativo')">ℹ️ Informativo</button>
+      <button class="nav-btn" onclick="showSection('politicas')">📜 Políticas</button>
     </nav>
-    <button id="theme-btn" onclick="toggleTheme()" style="margin-left:1rem;">🌙</button>
+
+    <div class="controls" aria-hidden="true">
+      <button class="icon-btn" id="themeBtn" onclick="toggleTheme()" title="Alternar modo claro/oscuro">🌙</button>
+    </div>
   </header>
 
+  <!-- Logo en fade (marca de agua) -->
+  <div class="watermark" aria-hidden="true">
+    <img src="logo.png" alt="">
+  </div>
+
+  <!-- Contenido principal: todo en una página (secciones) -->
   <main>
-    <!-- Home -->
-    <section id="home" class="section active">
-      <div class="card">
-        <h2>Bienvenido</h2>
+    <!-- HOME -->
+    <section id="home" class="section active" aria-labelledby="home-title">
+      <div class="card" id="home-card">
+        <h2 id="home-title">Bienvenido a HGC Informativo</h2>
         <p>
-          Explora nuestras secciones para conocer más sobre HGC: Quiénes somos, nuestro Aviso Legal y nuestras Políticas.  
-          Diseñado con estilo futurista, adaptado para computadoras y teléfonos móviles.
+          Somos una oficina de servicios administrativos enfocada en brindar atención clara, segura y profesional.
+          En este sitio encontrará información sobre quiénes somos, nuestro aviso legal, políticas de oficina, misión y visión.
+          El diseño es responsive y optimizado para teléfono y computadora.
         </p>
       </div>
     </section>
 
-    <!-- Informativo -->
-    <section id="informativo" class="section">
-      <div class="card">
-        <h2>¿Quiénes Somos?</h2>
+    <!-- INFORMATIVO -->
+    <section id="informativo" class="section" aria-labelledby="info-title">
+      <div class="card" id="info-card">
+        <h2 id="info-title">¿Quiénes Somos?</h2>
         <p>
-          HGC es una oficina de servicios administrativos que trabaja con transparencia, responsabilidad y apego a la ley.  
+          HGC es una oficina de servicios administrativos que trabaja con transparencia, responsabilidad y apego a la ley.
           No somos abogados ni brindamos asesoría legal, pero apoyamos a nuestros clientes en la gestión documental y en trámites administrativos de manera clara y segura.
         </p>
 
-        <h2>Aviso Legal</h2>
-        <blockquote>
-          “NO SOY ABOGADA NI ESTOY AUTORIZADA A EJERCER LA ABOGACÍA.  
-          NO PUEDO DAR ASESORÍA LEGAL NI ACEPTAR HONORARIOS POR ASESORÍA LEGAL.  
-          NO ESTOY ACREDITADA PARA REPRESENTARLO EN ASUNTOS DE INMIGRACIÓN.”
-        </blockquote>
+        <h3>Aviso Legal</h3>
+        <p style="font-weight:700">
+          NO SOY ABOGADA AUTORIZADA PARA EJERCER LA ABOGACÍA.<br>
+          NO PUEDO DAR ASESORÍA LEGAL NI ACEPTAR HONORARIOS POR ASESORÍA LEGAL.<br>
+          NO ESTOY ACREDITADA PARA REPRESENTARLE EN ASUNTOS DE INMIGRACIÓN.
+        </p>
+
+        <h3>🛡️ Protección Legal</h3>
+        <p>
+          Esta oficina se ampara en:
+          <br>• Florida Statutes Chapter 117 – Notaries Public (Regulación de los notarios).<br>
+          • Florida Statutes § 836.05 – Extorsión/Amenazas.<br>
+          • Florida Statutes § 784.048 – Acoso/Persecución (incluye comunicaciones electrónicas repetidas).<br>
+          • Primera Enmienda y Debido Proceso – Constitución de los EE. UU.
+        </p>
+        <p><strong>Nota:</strong> Cualquier amenaza, correo o mensaje escrito podrá ser retenido y usado como evidencia legal.</p>
+
+        <h3>Misión</h3>
+        <p>
+          Brindar servicios administrativos y notariales con total transparencia y respeto a la ley del Estado de Florida,
+          garantizando que cada gestión documental se realice de manera segura, confiable y con protección de los derechos del cliente.
+        </p>
+
+        <h3>Visión</h3>
+        <p>
+          Consolidarnos como una oficina de referencia en Florida por nuestro compromiso con la legalidad, la confidencialidad y la protección del cliente,
+          ofreciendo un servicio accesible y sustentado en el cumplimiento de la ley.
+        </p>
       </div>
     </section>
 
-    <!-- Políticas -->
-    <section id="politicas" class="section">
-      <div class="card">
-        <h2>📌 Políticas de Oficina – HGC</h2>
+    <!-- POLÍTICAS -->
+    <section id="politicas" class="section" aria-labelledby="pol-title">
+      <div class="card" id="pol-card">
+        <h2 id="pol-title">📌 Políticas de Oficina – HGC</h2>
 
         <h3>1. Transparencia y Legalidad</h3>
         <ul>
@@ -196,7 +215,7 @@
           <li>Todos los clientes deben mantener comunicación activa por correo electrónico durante los procesos en curso.</li>
           <li>Los documentos físicos se enviarán únicamente por mensajería certificada (UPS o equivalente).</li>
           <li>El cliente cubre los gastos de envío y manejo.</li>
-          <li>La oficina no es responsable de retrasos ocasionados por terceros.</li>
+          <li>La oficina no es responsable de retrasos ocasionados por terceros (servicios postales o de mensajería).</li>
         </ul>
 
         <h3>4. Atención al Cliente y No Discriminación</h3>
@@ -225,7 +244,7 @@
             <ul>
               <li>Florida Statutes § 836.05 – Extorsión/Amenazas</li>
               <li>Florida Statutes § 784.048 – Acoso/Persecución</li>
-              <li>Primera Enmienda y Debido Proceso – Constitución de EE.UU.</li>
+              <li>Primera Enmienda y Debido Proceso – Constitución de EE. UU.</li>
             </ul>
           </li>
           <li>Cualquier amenaza escrita, correo o mensaje podrá ser retenido como evidencia legal.</li>
@@ -237,69 +256,55 @@
           <li>Cualquier reclamo deberá presentarse por escrito de manera formal y respetuosa.</li>
         </ul>
 
-        <h2>📌 Aviso Legal para Mostrar en la Oficina</h2>
-        <p>
-          ⚖️ Importante <br>
-          NO SOY ABOGADA NI ESTOY AUTORIZADA A EJERCER LA ABOGACÍA. <br>
+        <!-- Repetimos aviso legal importante en la sección de políticas para mayor visibilidad -->
+        <h3>Aviso Legal Importante</h3>
+        <p style="font-weight:700">
+          NO SOY ABOGADA AUTORIZADA PARA EJERCER LA ABOGACÍA. <br>
           NO PUEDO DAR ASESORÍA LEGAL NI ACEPTAR HONORARIOS POR ASESORÍA LEGAL. <br>
-          NO ESTOY ACREDITADA PARA REPRESENTARLO EN ASUNTOS DE INMIGRACIÓN.
-        </p>
-        <p>
-          📜 Protección Legal <br>
-          Esta oficina se ampara en las siguientes leyes: <br>
-          - Florida Statutes Chapter 117 – Notaries Public <br>
-          - Florida Statutes § 836.05 – Extorsión/Amenazas <br>
-          - Florida Statutes § 784.048 – Acoso/Persecución <br>
-          - Primera Enmienda y Debido Proceso – Constitución de EE.UU. <br>
-          Cualquier amenaza escrita, correo o mensaje podrá ser retenido y usado como evidencia legal.
-        </p>
-        <p>
-          📂 Política de Documentos <br>
-          - Todos los documentos recibidos serán entregados únicamente a su dueño legítimo. <br>
-          - Esta oficina no retiene documentos migratorios ni personales una vez notificados al cliente. <br>
-          - El cliente puede solicitar copia de lo entregado en cualquier momento.
-        </p>
-        <p>
-          💲 Honorarios <br>
-          Los servicios notariales se cobran conforme a la ley del Estado de Florida. (La lista de tarifas está disponible a solicitud).
-        </p>
-        <p>
-          🤝 Compromiso de Igualdad <br>
-          Esta oficina no discrimina por motivos de raza, color, religión, sexo, origen nacional, edad, discapacidad o estatus migratorio.
-        </p>
-        <p>
-          🔒 Seguridad <br>
-          La oficina cuenta con videovigilancia para la protección de clientes y personal.
+          NO ESTOY ACREDITADA PARA REPRESENTARLE EN ASUNTOS DE INMIGRACIÓN.
         </p>
       </div>
     </section>
   </main>
 
+  <!-- Footer con contacto (clicable en móviles) -->
   <footer>
-    <p>
-      📷 Instagram: <a href="https://instagram.com/serviceshilda" target="_blank">@serviceshilda</a> |  
-      📞 Teléfono: <a href="tel:+17868731859">7868731859</a> |  
-      📧 Correo: <a href="mailto:serviceshilda@gmail.com">serviceshilda@gmail.com</a> |  
+    <p style="margin:0 0 8px 0">
+      📷 Instagram: <a href="https://instagram.com/serviceshilda" target="_blank" rel="noopener"> @serviceshilda</a> |
+      📞 Teléfono: <a href="tel:+17868731859">786 873 1859</a> |
+      📧 Correo: <a href="mailto:serviceshilda@gmail.com">serviceshilda@gmail.com</a>
+    </p>
+    <p style="margin:0">
       📍 Dirección: 1651 W 37th St, Unidad 410, Hialeah, FL 33012
     </p>
   </footer>
 
   <script>
-    function showSection(id) {
-      document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
+    // Mostrar sección
+    function showSection(id){
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      const el = document.getElementById(id);
+      if(el) el.classList.add('active');
+      // desplazar al top del contenido (mejor experiencia en móvil)
+      window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' });
     }
 
-    function toggleTheme() {
-      const body = document.body;
-      if (body.dataset.theme === "dark") {
-        body.dataset.theme = "light";
-        document.getElementById("theme-btn").innerText = "🌙";
-      } else {
-        body.dataset.theme = "dark";
-        document.getElementById("theme-btn").innerText = "☀️";
-      }
+    // Toggle theme con persistencia
+    const themeBtn = document.getElementById('themeBtn');
+    const stored = localStorage.getItem('hgc-theme');
+    if(stored) document.body.setAttribute('data-theme', stored);
+    function toggleTheme(){
+      const current = document.body.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.body.setAttribute('data-theme', next);
+      localStorage.setItem('hgc-theme', next);
+      themeBtn.textContent = next === 'dark' ? '☀️' : '🌙';
     }
+    // inicializar icono
+    (function initThemeBtn(){
+      const t = document.body.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+      themeBtn.textContent = t === 'dark' ? '☀️' : '🌙';
+    })();
   </script>
 </body>
 </html>
